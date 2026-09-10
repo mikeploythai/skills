@@ -1,0 +1,3 @@
+# mike's way
+
+WIP
