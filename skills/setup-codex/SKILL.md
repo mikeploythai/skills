@@ -22,6 +22,16 @@ focused workers, and independent review.
 read [the configuration reference](references/configuration.md) for the
 exact settings and agent definitions before previewing or applying them.
 
+## marketplace plugins
+
+recommend the GitHub and Linear marketplace plugins. during preview, report
+whether each is installed and connected. when available, use GitHub for
+repository, issue, and pull-request work, and Linear for project and issue
+workflows.
+
+do not install plugins, connect accounts, or change permissions unless the
+user explicitly asks. missing plugins do not block the core codex setup.
+
 ## safety boundary
 
 treat requests to show, preview, explain, or review the setup as read-only.
