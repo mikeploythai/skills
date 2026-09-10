@@ -3,6 +3,8 @@
 > written by lauren tan/poteto
 > https://github.com/cursor/plugins/blob/7366ac128bdf95f45e6734f412b49a4031800169/pstack/skills/unslop/SKILL.md
 
+See [source history and license](upstream-notices.md#pstack).
+
 Edit text to remove AI patterns.
 
 ## Process
