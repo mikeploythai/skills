@@ -1,0 +1,7 @@
+interface:
+  display_name: "setup codex"
+  short_description: "install mike's codex multi-agent setup"
+  default_prompt: "use $setup-codex to preview mike's codex setup."
+
+policy:
+  allow_implicit_invocation: false

@@ -22,6 +22,12 @@ for a manual install, copy the folders you want from `skills/` into your agent's
 
 my rules and preferences for how agents work: delegate, reuse what's already there, verify changes, and keep contributor docs useful. includes model/api design, interface guidance, and code defaults that respect the repo's existing conventions.
 
+### [setup-codex](skills/setup-codex/README.md)
+
+install, update, preview, or explain mikeploythai's opinionated codex
+multi-agent setup. it uses sol for orchestration and review, luna for focused
+workers, and preserves unrelated codex configuration.
+
 ## optional companions
 
 these aren't required, but heavily encouraged to install:
