@@ -1,0 +1,5 @@
+interface:
+  display_name: "mike's way"
+  short_description: "mikeploythai's rules for building software with agents"
+  default_prompt: "use $mikes-way to build the next complete slice of this project."
+
