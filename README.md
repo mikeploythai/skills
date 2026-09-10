@@ -2,17 +2,19 @@
 
 my rules and preferences for building software, tailored for agentic workflows.
 
+each skill lives in its own folder under `skills/`. [mikes-way](skills/mikes-way/SKILL.md) covers how the agent works. stack and environment setup can be added as a separate skill when it's ready.
+
 ## installation
 
 with node.js and npm available, run:
 
 ```sh
-npx skills add mikeploythai/mikes-way
+npx skills add mikeploythai/mikes-way --skill mikes-way
 ```
 
-follow the prompts to choose the skill, agent, and installation scope. see the [skills cli docs](https://skills.sh/docs/cli) for other options.
+follow the prompts to choose the agent and installation scope. see the [skills cli docs](https://skills.sh/docs/cli) for other options.
 
-for a manual install, copy the whole repository folder into your agent's skill directory as `mikes-way`. keep `SKILL.md` and `references/` together; the skill reads those references as needed. use the skill directory documented by your agent.
+for a manual install, copy `skills/mikes-way/` into your agent's skill directory as `mikes-way`. keep its `SKILL.md` and `references/` together; the skill reads those references as needed. use the skill directory documented by your agent.
 
 ## usage
 
@@ -41,4 +43,4 @@ missing companions shouldn't hold up tasks. the agent can recommend one when it 
 
 ## credits
 
-the bundled references include lauren tan's unslop and a standalone adaptation of blast radius. see [upstream notices](references/upstream-notices.md) for sources, changes, and license text.
+the bundled references include lauren tan's unslop and a standalone adaptation of blast radius. see [upstream notices](skills/mikes-way/references/upstream-notices.md) for sources, changes, and license text.
