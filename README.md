@@ -1,32 +1,26 @@
-# mike's way
+# skills
 
-my rules and preferences for building software, tailored for agentic workflows.
+my skills for building software with coding agents.
+
+each skill lives in its own folder under `skills/`, with its own instructions and references.
 
 ## installation
 
 with node.js and npm available, run:
 
 ```sh
-npx skills add mikeploythai/mikes-way
+npx skills add mikeploythai/skills
 ```
 
-follow the prompts to choose the skill, agent, and installation scope. see the [skills cli docs](https://skills.sh/docs/cli) for other options.
+follow the prompts to choose the skills, agent, and installation scope. see the [skills cli docs](https://skills.sh/docs/cli) for other options.
 
-for a manual install, copy the whole repository folder into your agent's skill directory as `mikes-way`. keep `SKILL.md` and `references/` together; the skill reads those references as needed. use the skill directory documented by your agent.
+for a manual install, copy the folders you want from `skills/` into your agent's skill directory. keep each folder's instructions and references together. use the skill directory documented by your agent.
 
-## usage
+## available skills
 
-ask your agent to use it with a concrete task:
+### [mikes-way](skills/mikes-way/README.md)
 
-```text
-$mikes-way add saved views to this app.
-```
-
-the skill asks the agent to delegate work, reuse existing capabilities, check what a change could break, and keep feature and design documentation current. existing repo conventions take priority over its code defaults.
-
-the feature map grows as features land. `DESIGN.md` waits until there's an established design direction, so an early mockup doesn't accidentally become the standard.
-
-it also tells the agent to commit completed slices and open issues worth tracking. pushing and deploying still need the user's consent.
+my rules and preferences for how agents work: delegate, reuse what's already there, verify changes, and keep contributor docs useful. includes model/api design, interface guidance, and code defaults that respect the repo's existing conventions.
 
 ## optional companions
 
@@ -41,4 +35,4 @@ missing companions shouldn't hold up tasks. the agent can recommend one when it 
 
 ## credits
 
-the bundled references include lauren tan's unslop and a standalone adaptation of blast radius. see [upstream notices](references/upstream-notices.md) for sources, changes, and license text.
+the bundled references include lauren tan's unslop and a standalone adaptation of blast radius. see [upstream notices](skills/mikes-way/references/upstream-notices.md) for sources, changes, and license text.
