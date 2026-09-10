@@ -106,4 +106,3 @@ after applying the setup:
 
 if validation fails, restore the affected file from its backup and report
 the failure.
-
