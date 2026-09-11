@@ -66,7 +66,7 @@ export default defineConfig({
         },
       },
       {
-        files: ["src/routes/__root.tsx"],
+        files: ["src/routes/**/*.tsx"],
         rules: {
           "github/filenames-match-regex": "off",
         },
@@ -149,3 +149,20 @@ export default defineConfig({
 ```
 
 for a react, tanstack router, and tailwind app, add the current project plugins for tanstack router with automatic code splitting, react with the oxc react compiler integration, and tailwind. enable typescript path resolution. confirm the exact plugin apis against the installed versions.
+
+when tanstack router is present, merge these into the project's
+`.vscode/settings.json` without replacing unrelated settings:
+
+```json
+{
+  "files.readonlyInclude": {
+    "**/routeTree.gen.ts": true
+  },
+  "files.watcherExclude": {
+    "**/routeTree.gen.ts": true
+  },
+  "search.exclude": {
+    "**/routeTree.gen.ts": true
+  }
+}
+```

@@ -14,6 +14,11 @@ prefer full-stack typescript, but keep the setup proportional to what we're buil
 - if the app needs a traditional server, use vite with elysia or hono. elysia is the current preference. expose openapi and generate the client with heyapi's vite plugin and its tanstack query integration.
 - use tanstack start or next.js app router if the app needs ssr or benefits from keeping the frontend and backend in one framework.
 
+default new web apps and mockups to no indexing until the user says they should
+be discoverable. add a `robots.txt` that disallows all crawlers, plus a
+`noindex, nofollow` meta tag or `X-Robots-Tag` response header. remove them when
+indexing is wanted. robots directives are not access control.
+
 ### toolchain
 
 use [vite+](https://viteplus.dev/guide/) for the web toolchain. let it manage node.js, pnpm, vite, vitest, oxlint, and oxfmt, and use the `vp` commands. stick with pnpm unless the project already uses or requires something else.
@@ -38,7 +43,7 @@ use vitest for code tests. use playwright for browser tests that need to run in 
 
 read [vite+ configuration](vite-plus-config.md) when setting up or changing vite+. it has the lint and format settings to start from. use the oxc integration for react compiler if the installed version supports it.
 
-set up `vite-plugin-mkcert` for local https in vite apps. add it as a dev dependency and add `mkcert()` to the vite plugins. use the https origin for msal react development and match it in the app's registered redirect uri.
+when a vite app needs local https, use `vite-plugin-mkcert`. add it as a dev dependency and add `mkcert()` to the vite plugins. use the https origin for msal react development and match it in the app's registered redirect uri.
 
 ### frontend choices
 
@@ -48,6 +53,28 @@ start with react, react compiler, and tanstack router. use shadcn/ui with base u
 pnpm dlx shadcn@latest init --preset b2BVlsCDD --template vite --pointer
 pnpm dlx shadcn@latest init --preset b2BVlsCDD --base aria --template vite --pointer
 ```
+
+when using tanstack router, prefer file-based routing. nest groups with several
+routes in folders, and add `route.tsx` when the group needs a shared layout,
+loader, or other parent behavior:
+
+```text
+folderA/
+├── page1.$id.tsx
+├── page2.tsx
+└── route.tsx
+folderB.onlyPage.$id.tsx
+```
+
+dot notation is fine for a nest with only one page, as in the `folderB`
+example. apply the route filename lint override and project-level vscode
+settings in [vite+ configuration](vite-plus-config.md).
+
+in a shadcn project, check the installed components and the catalog before
+writing a new component. use `pnpm ui:add <component>` when that shortcut
+exists, or `pnpm dlx shadcn@latest add <component>`, then adapt its source.
+write one from scratch only when the catalog has nothing that fits the needed
+interaction.
 
 for the rest, these are the preferences. add them as you need them:
 
