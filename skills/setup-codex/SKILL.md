@@ -90,6 +90,39 @@ create missing directories as needed.
 write complete files through temporary files and replace their targets only
 after the resulting toml parses successfully.
 
+## automatically use mike's way
+
+after setup, explain that the user can optionally make `$mikes-way` the
+default for software development work. setup alone does not enable this.
+if they ask to "automate mike's way" or otherwise enable that default, add
+the following block to `<codex-home>/AGENTS.md`:
+
+```markdown
+<!-- MIKES_WAY_START -->
+## Mike's way
+
+Use $mikes-way by default for software development work. Its engineering-manager role applies to the primary agent; subagents execute their assigned roles directly.
+<!-- MIKES_WAY_END -->
+```
+
+confirm that `mikes-way` is installed before reporting it as enabled.
+if it is missing, explain that it needs to be installed first.
+
+read the existing global instructions and preserve everything outside this
+marked block. create `AGENTS.md` if missing; leave an identical block alone
+and update an existing marked block instead of adding a duplicate. use the
+backup procedure above before changing an existing file. if the block has
+conflicting custom instructions, show the conflict before replacing them.
+
+check for `<codex-home>/AGENTS.override.md`, which can take precedence over
+`AGENTS.md`. if it would hide the new block, explain that and resolve the
+instruction location with the user rather than claiming the default is active.
+see [Codex's instruction discovery rules](https://learn.chatgpt.com/docs/agent-configuration/agents-md).
+
+after an opted-in update, read the file back and verify that the exact block
+appears once and unrelated instructions are unchanged. this option changes
+global instructions only; it does not rerun the rest of setup.
+
 ## verify
 
 after applying the setup:
@@ -101,8 +134,11 @@ after applying the setup:
    effort, sandbox, and instructions.
 4. report the files changed, files created, backups written, and conflicts
    left unresolved.
-5. tell the user to start a new codex task for the configuration to take
-   effect.
+5. tell the user to restart codex and start a new task for the setup to take
+   effect. if automatic mike's way is not already enabled, also tell them:
+   "you can restart codex now, or ask me to automate mike's way for all
+   engineering tasks first, then restart codex." if it is already enabled,
+   confirm that and give the restart instruction.
 
 if validation fails, restore the affected file from its backup and report
 the failure.
