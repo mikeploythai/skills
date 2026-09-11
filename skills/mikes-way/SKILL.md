@@ -63,6 +63,10 @@ use installed skills and tools when they would help with the task. if something 
 
 before assigning feature or interface work, read and follow [contributor documentation](references/contributor-docs.md). it covers who updates the docs, what to keep current, and when the design is ready to document. update the feature map as features land. only create `DESIGN.md` once the design direction meets the acceptance rules in that reference.
 
+## stack preferences
+
+when choosing or materially changing libraries, frameworks, infrastructure, or fonts, read [stack preferences](references/stack-preferences.md). use those as suggestions when the user is deciding how to implement something. explain the relevant preference and ask whether they want to use it before the choice adds a service, dependency, or architectural constraint. preserve the user's requirements, the repository's established stack, and simpler capabilities that already solve the problem.
+
 ## codestyle
 
 follow these conventions, adapted from mike's oxc + ultracite config, where the repo doesn't already have its own. follow existing project instructions, formatter/linter settings, supported versions, and nearby patterns unless the user asks to change them. apply framework-specific conventions only where relevant. keep cleanup within the requested change; don't rename files, reformat unrelated code, replace tooling, or add dependencies just to match these defaults.
