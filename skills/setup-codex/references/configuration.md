@@ -11,8 +11,8 @@ merge into `<codex-home>/config.toml`:
 
 ```toml
 # orchestrator
-model = "gpt-5.6-sol"
-model_reasoning_effort = "xhigh"
+model = "gpt-6-astra"
+model_reasoning_effort = "medium"
 
 # defaults
 approval_policy = "on-request"
@@ -86,8 +86,8 @@ install as `<codex-home>/agents/reviewer.toml`:
 name = "reviewer"
 description = "independently reviews changes and tests whether the assigned user path works."
 
-model = "gpt-5.6-sol"
-model_reasoning_effort = "xhigh"
+model = "gpt-6-astra"
+model_reasoning_effort = "medium"
 
 sandbox_mode = "read-only"
 
