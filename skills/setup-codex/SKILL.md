@@ -10,10 +10,10 @@ focused workers, and independent review.
 
 ## setup
 
-- orchestrator: `gpt-6-astra` at `low`.
+- orchestrator: `gpt-5.6-sol` at `xhigh`.
 - researcher: `gpt-5.6-luna` at `max`, read-only.
 - engineer: `gpt-5.6-luna` at `max`, workspace-write.
-- reviewer: `gpt-6-astra` at `low`, read-only.
+- reviewer: `gpt-5.6-sol` at `xhigh`, read-only.
 - up to four concurrent agent threads.
 - on-request approvals, workspace-write sandboxing, live web search,
   concise reasoning summaries, low verbosity, pragmatic personality, and
