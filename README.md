@@ -24,7 +24,7 @@ my rules and preferences for how agents work: delegate, reuse what's already the
 
 ### [setup-codex](skills/setup-codex/README.md)
 
-install, update, preview, or explain mikeploythai's opinionated codex multi-agent setup. it uses astra at medium for orchestration and review, luna for focused workers, and preserves unrelated codex configuration.
+install, update, preview, or explain mikeploythai's opinionated codex multi-agent setup. it uses astra at low for orchestration and review, luna for focused workers, and preserves unrelated codex configuration.
 
 ## optional companions
 

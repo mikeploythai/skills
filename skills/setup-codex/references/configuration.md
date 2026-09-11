@@ -12,7 +12,7 @@ merge into `<codex-home>/config.toml`:
 ```toml
 # orchestrator
 model = "gpt-6-astra"
-model_reasoning_effort = "medium"
+model_reasoning_effort = "low"
 
 # defaults
 approval_policy = "on-request"
@@ -87,7 +87,7 @@ name = "reviewer"
 description = "independently reviews changes and tests whether the assigned user path works."
 
 model = "gpt-6-astra"
-model_reasoning_effort = "medium"
+model_reasoning_effort = "low"
 
 sandbox_mode = "read-only"
 
