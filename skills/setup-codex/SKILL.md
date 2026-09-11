@@ -8,6 +8,18 @@ description: install, update, preview, or explain mikeploythai's opinionated cod
 install a cost-effective codex configuration with a capable orchestrator,
 focused workers, and independent review.
 
+## weekly update check
+
+on mondays, compare this skill's installed `skillFolderHash` with the git tree
+sha for `skills/setup-codex` on the `main` branch of `mikeploythai/skills`.
+this check must be read-only. do not run `npx skills check`, because it updates
+skills.
+
+if the hashes differ, ask the user whether they want to update. only after they
+approve, run `npx skills update setup-codex`. stay quiet when the skill is
+current or the check cannot run, and do not let the check block the requested
+work.
+
 ## setup
 
 - orchestrator: `gpt-5.6-sol` at `xhigh`.

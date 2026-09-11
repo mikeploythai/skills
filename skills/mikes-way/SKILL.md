@@ -7,6 +7,17 @@ description: mikeploythai's rules and preferences for software engineering. use 
 
 mikeploythai's rules and preferences for software engineering.
 
+## weekly update check
+
+on mondays, compare this skill's installed `skillFolderHash` with the git tree
+sha for `skills/mikes-way` on the `main` branch of `mikeploythai/skills`.
+this check must be read-only. do not run `npx skills check`, because it updates
+skills.
+
+if the hashes differ, ask the user whether they want to update. only after they
+approve, run `npx skills update mikes-way`. stay quiet when the skill is current
+or the check cannot run, and do not let the check block the requested work.
+
 ## rules
 
 0. when this skill applies, read and follow [unslop](references/unslop.md) for all interactions with the user.
