@@ -26,6 +26,8 @@ $mikes-way add saved views to this app.
 
 the skill asks the agent to delegate work, reuse existing capabilities, check what a change could break, and keep feature and design documentation current. existing repo conventions take priority over its code defaults.
 
+when choosing a stack, the agent reads [stack preferences](references/stack-preferences.md) for the tools mike likes working with. it also includes the [vite+ lint and format configuration](references/vite-plus-config.md). these are suggestions, so a working project doesn't need to change stacks to use the skill.
+
 the feature map grows as features land. `DESIGN.md` waits until there's an established design direction, so an early mockup doesn't accidentally become the standard.
 
 it also tells the agent to commit completed slices and open issues worth tracking. pushing and deploying still need the user's consent.
