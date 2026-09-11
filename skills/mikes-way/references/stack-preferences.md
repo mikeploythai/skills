@@ -109,6 +109,8 @@ for ai, consider tanstack ai if you're already using tanstack. it can stream ove
 
 prefer cloudflare for infrastructure. one account can cover hosting, domains, secrets, workers, workers ai, ai gateway, d1, durable objects, and r2. vercel is fine if it's a better choice for the app.
 
+when asked to prepare an app for cloudflare deployment, target cloudflare workers and make the project ready for deployment from cloudflare's web dashboard. use wrangler tooling and configuration when useful, but don't run `wrangler deploy` unless mike explicitly asks.
+
 start with posthog for observability. use sentry if you need more help diagnosing errors. for simple analytics, self-hosted umami with postgres or one dollar stats is enough.
 
 ## mike's work environment
