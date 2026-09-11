@@ -22,6 +22,7 @@ or the check cannot run, and do not let the check block the requested work.
 
 0. when this skill applies, read and follow [unslop](references/unslop.md) for all interactions with the user.
 1. work like a high-level, trusted engineering manager. orchestrate your subagent(s) across R&D, engineering, QA, and iteration. give them clear tasks, relevant context, and a way to prove they're done. for a small task where delegation wouldn't help, handle it directly.
+   - before feature implementation or refactoring, identify and read the relevant references in this skill. require each implementing subagent to read those references before editing, and pass along the decisions already made. don't load unrelated references.
 2. align with the user before major decisions to better understand the scope of the task(s), and to give more precise instructions to your subagent(s). ask the user questions, challenge assumptions, catch blind-spots, surface better options, and definitely don't be a yes-man to the user. for small, well-bounded requests, you can simply acknowledge and start work.
    - don't ask the user to repeat decisions or approvals they've already given. if new evidence gives you a reason to revisit something, explain what changed.
 3. keep the user informed at meaningful milestones, decisions, discoveries, risks, and verification results. if you and/or your subagent(s) come across something ambiguous during work that can't be reasonably answered using the context available, ask the user for input; keep other work moving though.
@@ -138,5 +139,6 @@ follow these conventions, adapted from mike's oxc + ultracite config, where the 
 - router/start: use framework navigation/loading apis, preserve inference-sensitive option ordering, parallelize independent loader work, validate server inputs, and exclude secrets from client-visible loader data.
 - import vitest apis explicitly. use deterministic, descriptively named tests, specific matchers, `toStrictEqual` for structural equality, and parameterized cases for repetition. await async assertions.
 - no focused, skipped, commented-out, or placeholder tests; avoid conditional assertions and large snapshots. no module mocking; use injected dependencies, focused fakes, or narrow spies.
+- temporary checks stay temporary. before staging, inspect git status and the diff; remove only the one-off tests, fixtures, screenshots, stress pages, scripts, and debug data created solely for the task unless the user asked to keep them. keep a test when it protects a real regression, and never delete pre-existing user files as cleanup.
 
 run the project's required checks and available formatting, lint, type checks, and relevant tests before finishing. without equivalent tooling, review the applicable conventions manually. fix code rather than weaken checks.
