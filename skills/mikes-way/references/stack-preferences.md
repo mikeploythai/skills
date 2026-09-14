@@ -1,31 +1,40 @@
-# stack preferences
+# Stack preferences
 
-these are the tools mike likes working with. when the user is figuring out how to build something, suggest the relevant ones and explain why you'd use them. ask before committing them to a new service, dependency, or architecture.
+These are the tools Mike likes working with. When the user is figuring out how to build something, suggest the relevant ones and explain why you'd use them. Ask before committing them to a new service, dependency, or architecture.
 
-don't replace a working stack just to match this list, or install everything here at the start of a project. use what the app actually needs. check the current docs, compatibility, maintenance, and pricing before adding something.
+Don't replace a working stack just to match this list, or install everything here at the start of a project. Use what the app actually needs. Check the current docs, compatibility, maintenance, and pricing before adding something.
 
-## general
+## General
 
-prefer full-stack typescript, but keep the setup proportional to what we're building:
+Prefer full-stack TypeScript, but keep the setup proportional to what we're building:
 
-- for a quick mockup, plain html, css, and javascript are fine. add the tailwind cli, a small server, htmx, or alpine.js if you need them.
-- for a site that's mostly content, use astro. keep the content in the project unless people need a cms to edit it. sanity and self-hosted payload are the preferences there.
-- for an app without ssr, start with vite and convex.
-- if the app needs a traditional server, use vite with elysia or hono. elysia is the current preference. expose openapi and generate the client with heyapi's vite plugin and its tanstack query integration.
-- use tanstack start or next.js app router if the app needs ssr or benefits from keeping the frontend and backend in one framework.
+- For a quick mockup, plain HTML, CSS, and JavaScript are fine. Add the Tailwind CLI, a small server, htmx, or Alpine.js if you need them.
+- For a site that's mostly content, use Astro. Keep the content in the project unless people need a CMS to edit it. Sanity and self-hosted Payload are the preferences there.
+- For an app without SSR, start with Vite and Convex.
+- If the app needs a traditional server, use Vite with Elysia or Hono. Elysia is the current preference. Expose OpenAPI and generate the client with Hey API's Vite plugin and its TanStack Query integration.
+- Use TanStack Start or Next.js App Router if the app needs SSR or benefits from keeping the frontend and backend in one framework.
 
-default new web apps and mockups to no indexing until the user says they should
-be discoverable. add a `robots.txt` that disallows all crawlers, plus a
-`noindex, nofollow` meta tag or `X-Robots-Tag` response header. remove them when
-indexing is wanted. robots directives are not access control.
+Default new web apps and mockups to no indexing until the user says they should be discoverable. Add a `robots.txt` that disallows all crawlers, plus a `noindex, nofollow` meta tag or `X-Robots-Tag` response header. Remove them when indexing is wanted. Robots directives are not access control.
 
-### toolchain
+### Toolchain
 
-use [vite+](https://viteplus.dev/guide/) for the web toolchain. let it manage node.js, pnpm, vite, vitest, oxlint, and oxfmt, and use the `vp` commands. stick with pnpm unless the project already uses or requires something else.
+Use [Vite+](https://viteplus.dev/guide/) for the web toolchain. Let it manage Node.js, pnpm, Vite, Vitest, Oxlint, and Oxfmt, and use the `vp` commands. Stick with pnpm unless the project already uses or requires something else.
 
-use pnpm workspaces for a monorepo. add turborepo if you need its task dependencies, caching, or remote execution. make the dev command start the server and wait for its openapi document before starting the frontend. heyapi needs the server running to generate the client. if you're using drizzle, start drizzle studio too.
+For a new frontend, Mike prefers scaffolding with Vite+ and pnpm:
 
-keep linting and formatting under one `check` script. add the database and ui shortcuts if those tools are in the project:
+```sh
+vp create vite@latest --package-manager pnpm
+```
+
+Immediately after initialization, run this from the newly created app directory:
+
+```sh
+pnpm up --latest
+```
+
+Use pnpm workspaces for a monorepo. Add Turborepo if you need its task dependencies, caching, or remote execution. Make the dev command start the server and wait for its OpenAPI document before starting the frontend. Hey API needs the server running to generate the client. If you're using Drizzle, start Drizzle Studio too.
+
+Keep linting and formatting under one `check` script. Add the database and UI shortcuts if those tools are in the project:
 
 ```json
 {
@@ -37,26 +46,26 @@ keep linting and formatting under one `check` script. add the database and ui sh
 }
 ```
 
-use vitest for code tests. use playwright for browser tests that need to run in ci or catch a regression. for a one-off check, have the subagent(s) use the browser and try the flow.
+Use Vitest for code tests. Use Playwright for browser tests that need to run in CI or catch a regression. For a one-off check, have the subagent(s) use the browser and try the flow.
 
-### vite+ configuration
+### Frontend toolchain
 
-read [vite+ configuration](vite-plus-config.md) when setting up or changing vite+. it has the lint and format settings to start from. use the oxc integration for react compiler if the installed version supports it.
+Read [frontend toolchain guidance](frontend-toolchain.md) when setting up or changing Vite+, linting, or styling integrations. It covers lint and format defaults, required JS-plugin dev dependencies, TanStack-only presets and route overrides, and the `@tailwindcss/vite` dev dependency preference. Use the Oxc React Compiler integration if supported, with `oxc-transform-react` as a dev dependency and the replaced Babel setup removed.
 
-when a vite app needs local https, use `vite-plugin-mkcert`. add it as a dev dependency and add `mkcert()` to the vite plugins. use the https origin for msal react development and match it in the app's registered redirect uri.
+For Tailwind v4 projects, include [shadcn's lint plugin](https://github.com/shadcn-ui/lint) in `vite.config.ts` under `lint.jsPlugins`, following the compatibility and configuration guidance in [frontend toolchain guidance](frontend-toolchain.md#tailwind-design-system-linting). It works without shadcn/ui. Prefer `no-restyle`, `no-raw-colors`, `no-arbitrary-values`, `no-unknown-classes`, and `require-static-classes`, with the layout allowances and design-system source overrides in that reference. Preserve other existing rule policies and use narrow, accepted exceptions.
 
-### frontend choices
+When a Vite app needs local HTTPS, use `vite-plugin-mkcert`. Add it as a dev dependency and add `mkcert()` to the Vite plugins. Use the HTTPS origin for MSAL React development and match it in the app's registered redirect URI.
 
-start with react, react compiler, and tanstack router. use shadcn/ui with base ui for components. use react aria when the app has major accessibility requirements.
+### Frontend choices
+
+Start with React, React Compiler, and TanStack Router. Use shadcn/ui with Base UI for components. Use React Aria when the app has major accessibility requirements.
 
 ```sh
-pnpm dlx shadcn@latest init --preset b2BVlsCDD --template vite --pointer
-pnpm dlx shadcn@latest init --preset b2BVlsCDD --base aria --template vite --pointer
+pnpm dlx shadcn@latest init --preset b2BVlrvAA --template vite --pointer
+pnpm dlx shadcn@latest init --preset b2BVlrvAA --base aria --template vite --pointer
 ```
 
-when using tanstack router, prefer file-based routing. nest groups with several
-routes in folders, and add `route.tsx` when the group needs a shared layout,
-loader, or other parent behavior:
+When using TanStack Router, prefer file-based routing. Nest groups with several routes in folders, and add `route.tsx` when the group needs a shared layout, loader, or other parent behavior:
 
 ```text
 folderA/
@@ -66,65 +75,80 @@ folderA/
 folderB.onlyPage.$id.tsx
 ```
 
-dot notation is fine for a nest with only one page, as in the `folderB`
-example. apply the route filename lint override and project-level vscode
-settings in [vite+ configuration](vite-plus-config.md).
+Dot notation is fine for a nest with only one page, as in the `folderB` example. Apply the route filename lint override and project-level VS Code settings in [frontend toolchain guidance](frontend-toolchain.md).
 
-in a shadcn project, check the installed components and the catalog before
-writing a new component. use `pnpm ui:add <component>` when that shortcut
-exists, or `pnpm dlx shadcn@latest add <component>`, then adapt its source.
-write one from scratch only when the catalog has nothing that fits the needed
-interaction.
+#### Shadcn CLI
 
-for the rest, these are the preferences. add them as you need them:
+In a shadcn project, inspect the installed components and project configuration before writing a new component. The CLI can find documentation and registry components:
 
-- tanstack query for data fetching, pacer for timing and rate control, and hotkeys for keyboard shortcuts.
-- tanstack table for data grids, virtual for long lists, and charts for data visualization.
-- tanstack form for new forms. react hook form is fine if it's already in the project or has something the app needs.
-- zod for runtime validation and t3 env for typed environment variables.
-- dnd kit for drag and drop, react dropzone for file drops, react email for email templates, and tiptap for rich text.
-- sonner, vaul, and cmdk when the component base does not already cover toasts, drawers, or command menus.
-- jotai when react context isn't satisfactory.
+```sh
+pnpm dlx shadcn@latest info --json
+pnpm dlx shadcn@latest docs button dialog select
+pnpm dlx shadcn@latest search @shadcn -q "sidebar"
+pnpm dlx shadcn@latest view @shadcn/button
+```
 
-prefer hugeicons or lucide for icons. use tailwind css with proper design tokens. stylex is worth considering for a custom design system built on base ui or react aria, but its stricter styling model comes at the cost of human developer experience.
+`docs` returns resolved documentation, example, and API-reference URLs. Read those pages before implementing or debugging the component. `info` identifies the framework, component base, Tailwind paths, aliases, and installed components. `search`, also available as `list`, finds registry items; `view` inspects their metadata and source.
 
-use fontsource for app fonts. instrument sans and cascadia code are the current favorites. other fonts to consider are inter, space mono, jetbrains mono, space grotesk, manrope, figtree, dm mono, bricolage grotesque, mona sans, unbounded, roboto flex, google sans, and google sans flex. pick something that suits the app. don't use the same font for everything just because it's on this list.
+Use the project's package runner and pass `--cwd <path>` for the app workspace when needed. Use the project's existing component base; `docs` supports `--base base|radix|aria` and `--json`. Consult the [CLI reference](https://ui.shadcn.com/docs/cli#docs) for current options.
 
-### backend and platform choices
+Preview component changes with `pnpm dlx shadcn@latest add button --dry-run`. The add command's `--diff <file>` and `--view <file>` options inspect individual files without writing changes. Use `add button --diff button.tsx` to compare an existing component with upstream and preserve local customizations when updating it. Use `add --diff` instead of the standalone `diff` command. Plain `add`, `init`, `apply`, `migrate`, and `eject` modify the project; use them when the requested work calls for those changes. See the [upstream CLI guide](https://github.com/shadcn-ui/ui/blob/main/skills/shadcn/cli.md).
 
-prefer convex for the backend. check what it and its components already do before writing auth, email, rate limiting, scheduled or durable work, presence, aggregates, migrations, or blob storage yourself.
+Use `pnpm ui:add <component>` when that shortcut exists, or `pnpm dlx shadcn@latest add <component>`, then adapt its source. Write one from scratch only when the catalog has nothing that fits the needed interaction.
 
-prefer better auth. use clerk if the user wants managed auth. use resend for email, though nodemailer is fine for something small or an integration that needs it.
+#### Other frontend libraries
 
-for a traditional server, use elysia or hono and generate the frontend client from openapi with heyapi's vite plugin. use drizzle if you need an orm. for data:
+For the rest, these are the preferences. Add them as you need them:
 
-- use cloudflare d1 for sqlite, or local node.js sqlite for isolated development data. use durable objects when the app needs their coordination model.
-- use neon or planetscale for postgres, after checking the cost with the user.
-- use planetscale for mysql, after checking the cost with the user.
-- cloudflare r2 for blobs, with uploadthing as a managed alternative.
+- TanStack Query for data fetching, Pacer for timing and rate control, and Hotkeys for keyboard shortcuts.
+- TanStack Table for data grids, Virtual for long lists, and Charts for data visualization.
+- TanStack Form for new forms. React Hook Form is fine if it's already in the project or has something the app needs.
+- Zod for runtime validation and T3 Env for typed environment variables.
+- dnd kit for drag and drop, React Dropzone for file drops, React Email for email templates, and Tiptap for rich text.
+- Sonner, Vaul, and cmdk when the component base does not already cover toasts, drawers, or command menus.
+- Jotai when React context isn't satisfactory.
 
-supabase is fine too. convex is the preference.
+Prefer Hugeicons or Lucide for icons. Use Tailwind CSS with proper design tokens. StyleX is worth considering for a custom design system built on Base UI or React Aria, but its stricter styling model comes at the cost of human developer experience.
 
-for ai, consider tanstack ai if you're already using tanstack. it can stream over http. the vercel ai sdk is also a good option, especially if it has the provider or ui support you need. if the stream comes from a convex http action or a non-typescript server, test that the client can actually read it. use openrouter if cloudflare's ai tools aren't a better choice for the app.
+When using StyleX, follow the [StyleX setup](frontend-toolchain.md#stylex) for the `sx.ts` namespace helper, optional `WithStyleX<T>` prop, matching `importSources`, and local Vite-plugin type declaration when the installed export is untyped.
 
-prefer cloudflare for infrastructure. one account can cover hosting, domains, secrets, workers, workers ai, ai gateway, d1, durable objects, and r2. vercel is fine if it's a better choice for the app.
+Use Fontsource for app fonts. Instrument Sans and Cascadia Code are the current favorites. Other fonts to consider are Inter, Space Mono, JetBrains Mono, Space Grotesk, Manrope, Figtree, DM Mono, Bricolage Grotesque, Mona Sans, Unbounded, Roboto Flex, Google Sans, and Google Sans Flex. Pick something that suits the app. Don't use the same font for everything just because it's on this list.
 
-when asked to prepare an app for cloudflare deployment, target cloudflare workers and make the project ready for deployment from cloudflare's web dashboard. use wrangler tooling and configuration when useful, but don't run `wrangler deploy` unless mike explicitly asks.
+### Backend and platform choices
 
-start with posthog for observability. use sentry if you need more help diagnosing errors. for simple analytics, self-hosted umami with postgres or one dollar stats is enough.
+Prefer Convex for the backend. Check what it and its components already do before writing auth, email, rate limiting, scheduled or durable work, presence, aggregates, migrations, or blob storage yourself.
 
-## mike's work environment
+Prefer Better Auth. Use Clerk if the user wants managed auth. Use Resend for email, though Nodemailer is fine for something small or an integration that needs it.
 
-this part is mostly for mike's day job, where production runs on on-prem iis and microsoft sql server. there's still .net framework, with a move toward modern .net. it might help someone working in a similar setup, but don't assume every project has these constraints.
+For a traditional server, use Elysia or Hono and generate the frontend client from OpenAPI with Hey API's Vite plugin. Use Drizzle if you need an ORM. For data:
 
-use a vite frontend and generate the openapi client with heyapi's vite plugin. a small server can use `.ashx` handlers and nswag.generation. on .net framework, prefer microsoft asp.net web api with owin if the app supports it. on modern .net, use minimal apis. build the frontend into `wwwroot` if that's where the iis app serves it from.
+- Use Cloudflare D1 for SQLite, or local Node.js SQLite for isolated development data. Use Durable Objects when the app needs their coordination model.
+- Use Neon or PlanetScale for Postgres, after checking the cost with the user.
+- Use PlanetScale for MySQL, after checking the cost with the user.
+- Cloudflare R2 for blobs, with UploadThing as a managed alternative.
 
-use msal react in the browser, microsoft.identity.web on the server, and the microsoft graph sdk for microsoft 365 integration. prefer azure key vault for secrets. the fallback is gitignored `secrets.config` for `<appSettings>` and `database.config` for connection strings.
+Supabase is fine too. Convex is the preference.
 
-production uses on-prem sql server, but do all data work in sqlite during development so it doesn't affect the production database. when mike is ready, have a subagent create a sql server migration based on the changes made in sqlite. account for differences between sqlite and sql server, and check the migration against a local or test sql server before handing it back for review. creating the migration doesn't mean running it against production.
+For AI, consider TanStack AI if you're already using TanStack. It can stream over HTTP. The Vercel AI SDK is also a good option, especially if it has the provider or UI support you need. If the stream comes from a Convex HTTP action or a non-TypeScript server, test that the client can actually read it. Use OpenRouter if Cloudflare's AI tools aren't a better choice for the app.
 
-prefer microsoft.data.sqlclient for sql server, and add dapper if it makes the queries or mapping easier. use system.text.json if the target framework supports what you need.
+Prefer Cloudflare for infrastructure. One account can cover hosting, domains, secrets, Workers, Workers AI, AI Gateway, D1, Durable Objects, and R2. Vercel is fine if it's a better choice for the app.
 
-for ai, prefer microsoft semantic kernel with microsoft foundry or openrouter. stream responses over http with server-sent events if you only need server-to-client updates. you can use tanstack ai's react client if the server sends the stream format it expects.
+When asked to prepare an app for Cloudflare deployment, target Cloudflare Workers and make the project ready for deployment from Cloudflare's web dashboard. Use Wrangler tooling and configuration when useful, but don't run `wrangler deploy` unless Mike explicitly asks.
 
-if web forms is unavoidable, keep it close to plain web development. disable viewstate, render markup in `.aspx`, and use `.aspx.cs` only to load data or add markup through `asp:Literal` and `asp:Placeholder`. don't add other server or custom controls. use `.ashx` for api endpoints, htmx with alpine.js or jquery for browser behavior, jsdelivr for cdn dependencies, and a local tailwind cli build. if bootstrap is unavoidable, check the current bootstrap 6 prerelease before using it. set up microsoft.aspnet.friendlyurls.core.
+Start with PostHog for observability. Use Sentry if you need more help diagnosing errors. For simple analytics, self-hosted Umami with Postgres or One Dollar Stats is enough.
+
+## Mike's work environment
+
+This part is mostly for Mike's day job, where production runs on on-prem IIS and Microsoft SQL Server. There's still .NET Framework, with a move toward modern .NET. It might help someone working in a similar setup, but don't assume every project has these constraints.
+
+Use a Vite frontend and generate the OpenAPI client with Hey API's Vite plugin. A small server can use `.ashx` handlers and `NSwag.Generation`. On .NET Framework, prefer Microsoft ASP.NET Web API with OWIN if the app supports it. On modern .NET, use minimal APIs. Build the frontend into `wwwroot` if that's where the IIS app serves it from.
+
+Use MSAL React in the browser, `Microsoft.Identity.Web` on the server, and the Microsoft Graph SDK for Microsoft 365 integration. Prefer Azure Key Vault for secrets. The fallback is gitignored `secrets.config` for `<appSettings>` and `database.config` for connection strings.
+
+Production uses on-prem SQL Server, but do all data work in SQLite during development so it doesn't affect the production database. When Mike is ready, have a subagent create a SQL Server migration based on the changes made in SQLite. Account for differences between SQLite and SQL Server, and check the migration against a local or test SQL Server before handing it back for review. Creating the migration doesn't mean running it against production.
+
+Prefer `Microsoft.Data.SqlClient` for SQL Server, and add Dapper if it makes the queries or mapping easier. Use `System.Text.Json` if the target framework supports what you need.
+
+For AI, prefer Microsoft Semantic Kernel with Microsoft Foundry or OpenRouter. Stream responses over HTTP with server-sent events if you only need server-to-client updates. You can use TanStack AI's React client if the server sends the stream format it expects.
+
+If Web Forms is unavoidable, keep it close to plain web development. Disable ViewState, render markup in `.aspx`, and use `.aspx.cs` only to load data or add markup through `asp:Literal` and `asp:Placeholder`. Don't add other server or custom controls. Use `.ashx` for API endpoints, htmx with Alpine.js or jQuery for browser behavior, jsDelivr for CDN dependencies, and a local Tailwind CLI build. If Bootstrap is unavoidable, check the current Bootstrap 6 prerelease before using it. Set up `Microsoft.AspNet.FriendlyUrls.Core`.

@@ -1,6 +1,6 @@
 # Unslop
 
-> written by lauren tan/poteto
+> Written by Lauren Tan/poteto
 > https://github.com/cursor/plugins/blob/7366ac128bdf95f45e6734f412b49a4031800169/pstack/skills/unslop/SKILL.md
 
 See [source history and license](upstream-notices.md#pstack).
@@ -15,7 +15,7 @@ Edit text to remove AI patterns.
 
 ## Patterns to detect and fix
 
-Rule numbers are stable ids that other skills cite. A removed rule leaves a gap.
+Rule numbers are stable IDs that other skills cite. A removed rule leaves a gap.
 
 ### Content
 
