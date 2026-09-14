@@ -65,7 +65,26 @@ folderB.onlyPage.$id.tsx
 
 Dot notation is fine for a nest with only one page, as in the `folderB` example. Apply the route filename lint override and project-level VS Code settings in [Vite+ configuration](vite-plus-config.md).
 
-In a shadcn project, check the installed components and the catalog before writing a new component. Use `pnpm ui:add <component>` when that shortcut exists, or `pnpm dlx shadcn@latest add <component>`, then adapt its source. Write one from scratch only when the catalog has nothing that fits the needed interaction.
+#### Shadcn CLI
+
+In a shadcn project, inspect the installed components and project configuration before writing a new component. The CLI can find documentation and registry components:
+
+```sh
+pnpm dlx shadcn@latest info --json
+pnpm dlx shadcn@latest docs button dialog select
+pnpm dlx shadcn@latest search @shadcn -q "sidebar"
+pnpm dlx shadcn@latest view @shadcn/button
+```
+
+`docs` returns resolved documentation, example, and API-reference URLs. Read those pages before implementing or debugging the component. `info` identifies the framework, component base, Tailwind paths, aliases, and installed components. `search`, also available as `list`, finds registry items; `view` inspects their metadata and source.
+
+Use the project's package runner and pass `--cwd <path>` for the app workspace when needed. Use the project's existing component base; `docs` supports `--base base|radix|aria` and `--json`. Consult the [CLI reference](https://ui.shadcn.com/docs/cli#docs) for current options.
+
+Preview component changes with `pnpm dlx shadcn@latest add button --dry-run`. The add command's `--diff <file>` and `--view <file>` options inspect individual files without writing changes. Use `add button --diff button.tsx` to compare an existing component with upstream and preserve local customizations when updating it. Use `add --diff` instead of the standalone `diff` command. Plain `add`, `init`, `apply`, `migrate`, and `eject` modify the project; use them when the requested work calls for those changes. See the [upstream CLI guide](https://github.com/shadcn-ui/ui/blob/main/skills/shadcn/cli.md).
+
+Use `pnpm ui:add <component>` when that shortcut exists, or `pnpm dlx shadcn@latest add <component>`, then adapt its source. Write one from scratch only when the catalog has nothing that fits the needed interaction.
+
+#### Other frontend libraries
 
 For the rest, these are the preferences. Add them as you need them:
 
