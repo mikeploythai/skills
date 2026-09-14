@@ -1,0 +1,7 @@
+interface:
+  display_name: "Setup Claude"
+  short_description: "Install Mike's Claude Code multi-agent setup"
+  default_prompt: "Use $setup-claude to preview Mike's Claude Code setup."
+
+policy:
+  allow_implicit_invocation: false
