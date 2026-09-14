@@ -30,13 +30,15 @@ The skill preserves unrelated configuration and only changes global Claude Code 
 
 | Setting | Value |
 | --- | --- |
-| `model` | `claude-opus-5` |
-| `effortLevel` | `xhigh` |
+| `model` | `claude-fable-5-1` |
+| `effortLevel` | `medium` |
 | `showThinkingSummaries` | `true` |
 | `permissions.defaultMode` | `ask` |
 | `sandbox.enabled` | `true` |
 | `sandbox.autoAllowBashIfSandboxed` | `true` |
 
-Plus three subagents in `<claude-home>/agents/`: a read-only `researcher` and a workspace-writing `engineer` on Sonnet 5 at `max` effort, and a read-only `reviewer` on Opus 5 at `xhigh`.
+Plus three subagents in `<claude-home>/agents/`: a read-only `researcher` at `high` and a workspace-writing `engineer` at `xhigh`, both on Sonnet 5, and a read-only `reviewer` on Fable 5.1 at `high`.
+
+Fable 5.1 takes the orchestrator and reviewer seats, where judgment pays and output volume is low. Sonnet 5 takes the researcher and engineer seats, which read and write the most tokens. Fable 5.1 also requires 30-day data retention; the [configuration reference](references/configuration.md) names the Opus 5 substitution for organizations that cannot meet that.
 
 Some Codex settings have no counterpart here. Claude Code has no session cap on concurrent subagents and no global default subagent model, and web search, web fetch, and context compaction are built in.

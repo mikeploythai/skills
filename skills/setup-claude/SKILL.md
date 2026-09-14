@@ -15,13 +15,15 @@ If the hashes differ, ask the user whether they want to update. Only after they 
 
 ## Setup
 
-- Orchestrator: Opus 5 at `xhigh`.
-- Researcher: Sonnet 5 at `max`, no file edits.
-- Engineer: Sonnet 5 at `max`, edits accepted inside the workspace.
-- Reviewer: Opus 5 at `xhigh`, no file edits.
+- Orchestrator: Fable 5.1 at `medium`.
+- Researcher: Sonnet 5 at `high`, no file edits.
+- Engineer: Sonnet 5 at `xhigh`, edits accepted inside the workspace.
+- Reviewer: Fable 5.1 at `high`, no file edits.
 - Prompted approvals, Bash sandboxing where the platform supports it, and visible thinking summaries.
 
 Claude Code has no session cap on concurrent subagents and no global default subagent model. Parallelism comes from batching agent calls in a single turn, and each agent file carries its own model and effort. Web search, web fetch, and context compaction are built in and need no configuration.
+
+Fable 5.1 runs the two judgment roles and Sonnet 5 runs the two token-heavy ones, because Fable costs five times Sonnet per output token. The configuration reference explains the per-role reasoning and names the cheaper substitution for an organization on zero data retention, which cannot use Fable 5.1 without express authorization from Anthropic. Check that before installing, and report it during a preview.
 
 Read [the configuration reference](references/configuration.md) for the exact settings and agent definitions before previewing or applying them.
 

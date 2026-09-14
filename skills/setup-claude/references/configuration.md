@@ -10,8 +10,8 @@ Merge into `<claude-home>/settings.json`:
 
 ```json
 {
-  "model": "claude-opus-5",
-  "effortLevel": "xhigh",
+  "model": "claude-fable-5-1",
+  "effortLevel": "medium",
   "showThinkingSummaries": true,
   "permissions": {
     "defaultMode": "ask"
@@ -35,6 +35,21 @@ Install these as Markdown files in `<claude-home>/agents/`. The YAML frontmatter
 
 When `mikes-way` is installed, `skills: mikes-way` can be added to any of these agents to preload those rules instead of having the agent load them on demand.
 
+## Model choice
+
+Fable 5.1 costs $10 per million input tokens and $50 per million output tokens: twice Opus 5 and five times Sonnet 5. Thinking tokens bill as output, so effort and role decide most of the bill.
+
+| Role | Model | Effort | Why |
+| --- | --- | --- | --- |
+| Orchestrator | `claude-fable-5-1` | `medium` | Delegates, reads reports, and decides. Low output volume against a long cached prefix, where Fable's $0.25 per million cache reads land well. Lower effort on Fable often beats a higher setting on an older model, so `medium` is the price-to-performance point for routine turns. |
+| Reviewer | `fable` | `high` | Catching a real defect is worth the most per token, and review output is findings rather than files. Effort earns its cost here. |
+| Researcher | `sonnet` | `high` | Reads a lot and writes a little. Input-heavy work is the wrong place to pay Fable rates. |
+| Engineer | `sonnet` | `xhigh` | Produces the most output tokens of any role, so the five-times output multiplier would land hardest here. `xhigh` is the documented sweet spot for coding and agentic work. |
+
+Raise a single turn instead of the defaults: `/effort` changes effort mid-session, and `/model` switches the orchestrator for hard problems. That beats paying `max` on every routine turn.
+
+Fable 5.1 requires 30-day data retention. An organization on zero data retention cannot use it without express authorization from Anthropic, so an install there should stay on `claude-opus-5` at `xhigh`.
+
 ## Researcher
 
 Install as `<claude-home>/agents/researcher.md`:
@@ -44,7 +59,7 @@ Install as `<claude-home>/agents/researcher.md`:
 name: researcher
 description: Investigates code, technical options, and general questions; returns evidence and a recommendation.
 model: sonnet
-effort: max
+effort: high
 disallowedTools: Edit, Write, NotebookEdit
 color: blue
 ---
@@ -70,8 +85,8 @@ Install as `<claude-home>/agents/reviewer.md`:
 ---
 name: reviewer
 description: Independently reviews changes and tests whether the assigned user path works.
-model: opus
-effort: xhigh
+model: fable
+effort: high
 disallowedTools: Edit, Write, NotebookEdit
 color: orange
 ---
@@ -100,7 +115,7 @@ Install as `<claude-home>/agents/engineer.md`:
 name: engineer
 description: Implements a bounded slice, verifies it, and resolves review findings.
 model: sonnet
-effort: max
+effort: xhigh
 permissionMode: acceptEdits
 color: green
 ---
