@@ -49,8 +49,8 @@ When a Vite app needs local HTTPS, use `vite-plugin-mkcert`. Add it as a dev dep
 Start with React, React Compiler, and TanStack Router. Use shadcn/ui with Base UI for components. Use React Aria when the app has major accessibility requirements.
 
 ```sh
-pnpm dlx shadcn@latest init --preset b2BVlsCDD --template vite --pointer
-pnpm dlx shadcn@latest init --preset b2BVlsCDD --base aria --template vite --pointer
+pnpm dlx shadcn@latest init --preset b2BVlrvAA --template vite --pointer
+pnpm dlx shadcn@latest init --preset b2BVlrvAA --base aria --template vite --pointer
 ```
 
 When using TanStack Router, prefer file-based routing. Nest groups with several routes in folders, and add `route.tsx` when the group needs a shared layout, loader, or other parent behavior:
