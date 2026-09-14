@@ -24,3 +24,10 @@ these can help with design taste. follow the guidance on optional companions in 
 
 - [cloudflare's kumo design skill](https://github.com/cloudflare/kumo/tree/main/skills/kumo-design) has useful guidance even when the project doesn't use kumo. fit the visual choices to the project, and only use its component examples when those components are actually available. the skill doesn't require adopting the kumo ui library.
 - [jakub krehel's skills](https://github.com/jakubkrehel/skills) cover different parts of interface design and review. use the ones relevant to the work.
+- [emil kowalski's skills](https://github.com/emilkowalski/skills) cover interface
+  polish, component design, and deliberate motion. use `emil-design-eng` for
+  general design engineering guidance, `animate` for web animation, and
+  `animate-expo` for react native and expo. use `review-animations` to review
+  existing motion, `improve-animations` for a codebase audit, and
+  `find-animation-opportunities` to decide where motion would help. choose the
+  skill that fits the task and the project's established design.
