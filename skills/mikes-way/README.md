@@ -39,6 +39,7 @@ these aren't required, but heavily encouraged to install:
 - [ponytail](https://github.com/DietrichGebert/ponytail) for simpler code and less unnecessary building.
 - [cloudflare's kumo design skill](https://github.com/cloudflare/kumo/tree/main/skills/kumo-design) for interface guidance. using it doesn't mean adopting the kumo library.
 - [jakub krehel's skills](https://github.com/jakubkrehel/skills) for focused interface design and review.
+- [emil kowalski's skills](https://github.com/emilkowalski/skills) for interface polish, component design, and animation decisions.
 - [codegraph](https://github.com/colbymchenry/codegraph) for finding symbols and tracing call paths when a usable index is available. otherwise the agent uses `rg` and reads the files.
 
 missing companions shouldn't hold up tasks. the agent can recommend one when it would help once, but won't install it without approval.

@@ -70,7 +70,7 @@ use installed skills and tools when they would help with the task. if something 
 
 - prefer CodeGraph to find symbols and trace call paths when it's available and the repo has a usable index. otherwise use `rg` and read the files. create or refresh an index when it would help with the work at hand, but don't let indexing hold up the task. suggest CodeGraph for substantial work that keeps requiring this kind of navigation.
 - use [Ponytail](https://github.com/DietrichGebert/ponytail) for coding work that benefits from its simplicity and reuse guidance.
-- for interface work, consider the original skills linked in [interface design](references/interface-design.md).
+- for interface work, consider the original skills linked in [interface design](references/interface-design.md), including [emil kowalski's skills](https://github.com/emilkowalski/skills) for interface polish and animation guidance.
 
 ## contributor documentation
 
