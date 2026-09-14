@@ -43,6 +43,12 @@ use vitest for code tests. use playwright for browser tests that need to run in 
 
 read [vite+ configuration](vite-plus-config.md) when setting up or changing vite+. it has the lint and format settings to start from. use the oxc integration for react compiler if the installed version supports it.
 
+for tailwind v4 projects, include [shadcn's lint plugin](https://github.com/shadcn-ui/lint)
+in `vite.config.ts` under `lint.jsPlugins`, following the compatibility and
+configuration guidance in [vite+ configuration](vite-plus-config.md#tailwind-design-system-linting).
+it works without shadcn/ui. use its rules to encode the project's accepted
+design-system requirements, and preserve existing rule policies.
+
 when a vite app needs local https, use `vite-plugin-mkcert`. add it as a dev dependency and add `mkcert()` to the vite plugins. use the https origin for msal react development and match it in the app's registered redirect uri.
 
 ### frontend choices

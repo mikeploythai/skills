@@ -1,6 +1,6 @@
 # vite+ configuration
 
-this is the linting and formatting portion of mike's current `vite.config.ts`. keep it when the installed versions support it and the repo has not chosen different rules. remove framework-specific presets or overrides when they do not apply.
+this is mike's starting linting and formatting configuration for `vite.config.ts`. keep it when the installed versions support it and the repo has not chosen different rules. remove framework-specific presets, js plugins, and overrides when they do not apply. include `@shadcn/lint` only for compatible tailwind v4 projects, as described below.
 
 ```ts
 import ultracite from "ultracite/oxfmt";
@@ -31,6 +31,8 @@ export default defineConfig({
     ignorePatterns: core.ignorePatterns,
     jsPlugins: [
       ...(jsPlugins.jsPlugins ?? []),
+      // Tailwind v4 projects only.
+      "@shadcn/lint",
       {
         name: "vite-plus",
         specifier: "vite-plus/oxlint-plugin",
@@ -147,6 +149,34 @@ export default defineConfig({
   },
 });
 ```
+
+## tailwind design-system linting
+
+for tailwind v4 projects, add [shadcn's lint plugin](https://github.com/shadcn-ui/lint)
+to the package that owns the lint configuration:
+
+```sh
+vp add -D @shadcn/lint
+```
+
+keep the `"@shadcn/lint"` entry in `lint.jsPlugins` in `vite.config.ts`, alongside
+the existing plugins. it works with custom tailwind components and themes;
+shadcn/ui is not required. omit the dependency and entry for projects without
+tailwind v4.
+
+check that node.js is at least 20.19 and vite+'s bundled oxlint is at least 1.80.
+use the project's existing lint command, such as `vp lint` or `vp check`, to
+verify the plugin loads. keep vite+'s lint configuration in `vite.config.ts`;
+do not add a parallel `.oxlintrc.json` just for this plugin.
+
+registration alone enables no rules. preserve existing rule policies, then
+configure the `shadcn/*` rules, discovery settings, and component contracts
+that match the project's accepted design system. see the upstream
+[setup guide](https://github.com/shadcn-ui/lint/blob/main/SETUP.md),
+[rules](https://github.com/shadcn-ui/lint/blob/main/docs/rules.md), and
+[design-system configuration](https://github.com/shadcn-ui/lint/blob/main/docs/design-systems.md).
+
+## framework plugins and editor settings
 
 for a react, tanstack router, and tailwind app, add the current project plugins for tanstack router with automatic code splitting, react with the oxc react compiler integration, and tailwind. enable typescript path resolution. confirm the exact plugin apis against the installed versions.
 
