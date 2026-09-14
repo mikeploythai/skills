@@ -1,4 +1,10 @@
-# Vite+ configuration
+# Frontend toolchain
+
+Mike's frontend toolchain guidance covers Vite+, lint and format plugins, framework integrations, Tailwind, StyleX, and editor settings. Apply only the parts relevant to the project's stack and installed versions.
+
+For a new frontend, follow the Vite+ scaffolding preference in [stack preferences](stack-preferences.md#toolchain).
+
+## Vite+ lint and format configuration
 
 This is Mike's starting linting and formatting configuration for `vite.config.ts`. Keep it when the installed versions support it and the repo has not chosen different rules. Remove framework-specific presets, JS plugins, and overrides when they do not apply. Include `@shadcn/lint` only for compatible Tailwind v4 projects, as described below.
 
@@ -181,7 +187,7 @@ export default defineConfig({
 
 ## Lint plugin dependencies
 
-Install the plugins referenced by the selected Ultracite JS-plugins presets as direct dev dependencies in the package that owns `vite.config.ts`. Oxlint resolves their specifiers from the project, so extending the presets alone is not enough. For the base js-plugins preset used above:
+Install the plugins referenced by the selected Ultracite JS-plugin presets as direct dev dependencies in the package that owns `vite.config.ts`. Oxlint resolves their specifiers from the project, so extending the presets alone is not enough. For the base `js-plugins` preset used above:
 
 ```sh
 vp add -D eslint-plugin-github eslint-plugin-sonarjs oxlint-plugin-react-doctor
@@ -219,13 +225,13 @@ Same-file constants can be read one hop deep. Wrappers may forward their receive
 
 Recognition and theme discovery are part of enforcement. Use `components.json` when present; verify the component aliases and theme CSS path it names. For a custom design system, set `settings.shadcn.ui` or `componentImports` for the actual component imports. Merge these settings without losing `jsPluginSettings`. Without `components.json`, verify the discovered stylesheet imports Tailwind and includes the project's tokens through its import graph. Scope component recognition per app in a workspace and preserve each app's theme discovery. Fix theme-loading warnings before treating a clean result as full coverage; no-unknown-classes falls back to a less precise grammar when Tailwind or the theme cannot load. See [settings](https://github.com/shadcn-ui/lint#settings) and [discovery and analysis limits](https://github.com/shadcn-ui/lint/blob/main/docs/how-it-works.md).
 
-Exceptions apply to each rule independently. Allowing a color or arbitrary value does not make it acceptable to no-restyle. Component `contracts` match resolved names; a contract inherits omitted top-level keys, and only the last matching contract applies. Require-static-classes has no `allow`, `deny`, or `contracts`. Avoid `deny` alone unless the intention is to allow every other match. Keep exceptions narrow and supported by styles the app actually loads. Review suggested color replacements against the design; proximity in light-mode color values does not establish the right semantic token.
+Exceptions apply to each rule independently. Allowing a color or arbitrary value does not make it acceptable to `no-restyle`. Component `contracts` match resolved names; a contract inherits omitted top-level keys, and only the last matching contract applies. `require-static-classes` has no `allow`, `deny`, or `contracts`. Avoid `deny` alone unless the intention is to allow every other match. Keep exceptions narrow and supported by styles the app actually loads. Review suggested color replacements against the design; proximity in light-mode color values does not establish the right semantic token.
 
 Add other `shadcn/*` rules when relevant. See the upstream [setup guide](https://github.com/shadcn-ui/lint/blob/main/SETUP.md), [rules](https://github.com/shadcn-ui/lint/blob/main/docs/rules.md), and [design-system configuration](https://github.com/shadcn-ui/lint/blob/main/docs/design-systems.md).
 
 ## Framework plugins and editor settings
 
-For a React, TanStack Router, and Tailwind app, add the current project plugins for TanStack Router with automatic code splitting, React with the Oxc React compiler integration, and Tailwind. Enable TypeScript path resolution. Confirm the exact plugin APIs against the installed versions.
+For a React, TanStack Router, and Tailwind app, add the current project plugins for TanStack Router with automatic code splitting, React with the Oxc React Compiler integration, and Tailwind. Enable TypeScript path resolution. Confirm the exact plugin APIs against the installed versions.
 
 When setting up Tailwind's Vite integration, Mike prefers `@tailwindcss/vite` as a dev dependency in the app package:
 
@@ -233,9 +239,9 @@ When setting up Tailwind's Vite integration, Mike prefers `@tailwindcss/vite` as
 vp add -D @tailwindcss/vite
 ```
 
-### Oxc React compiler
+### Oxc React Compiler
 
-When using the Oxc React compiler integration, install `oxc-transform-react` as a dev dependency in the app package. Remove Babel imports, plugin options, configuration files, and direct dependencies used solely by the replaced React compiler setup. Do not leave that Babel compiler active alongside Oxc. Preserve Babel configuration needed by another build path; StyleX's unplugin may also require Babel internally. Verify the installed React plugin's Oxc compiler option and run the build. See the [Oxc React compiler guide](https://oxc.rs/docs/guide/usage/transformer/react-compiler).
+When using the Oxc React Compiler integration, install `oxc-transform-react` as a dev dependency in the app package. Remove Babel imports, plugin options, configuration files, and direct dependencies used solely by the replaced React Compiler setup. Do not leave that Babel compiler active alongside Oxc. Preserve Babel configuration needed by another build path; StyleX's unplugin may also require Babel internally. Verify the installed React plugin's Oxc compiler option and run the build. See the [Oxc React Compiler guide](https://oxc.rs/docs/guide/usage/transformer/react-compiler).
 
 ### StyleX
 
@@ -244,7 +250,7 @@ When using StyleX, use `@stylexjs/stylex` as the runtime package and `@stylexjs/
 ```ts
 import type { StyleXStyles } from "@stylexjs/stylex";
 
-// oxlint-disable-next-line sonarjs/no-wildcard-import, sx intentionally exports the stylex namespace
+// oxlint-disable-next-line sonarjs/no-wildcard-import, sx intentionally exports the StyleX namespace
 export * as sx from "@stylexjs/stylex";
 
 export type WithStyleX<T> = T & {

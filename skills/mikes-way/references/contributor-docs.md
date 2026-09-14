@@ -1,6 +1,6 @@
 # Contributor documentation
 
-Write documentation as normal prose, with ordinary capitalization, punctuation, and readable paragraphs. The codestyle conventions apply to source code and machine-readable configuration in code projects, including code examples in docs. They do not govern README text, feature maps, design guidance, product copy, or messages to the user. Follow the project's prose style where one exists.
+Write documentation as normal prose, with sentence case, proper capitalization for names and acronyms, and normal punctuation. Keep each prose paragraph on one source line and separate paragraphs with a blank line. Let the editor or renderer wrap text; do not apply code line-length targets to prose. The codestyle conventions apply to source code and machine-readable configuration in code projects, including code examples in docs. They do not govern README text, feature maps, design guidance, product copy, or messages to the user. Prose inside configuration strings follows the same writing conventions. Follow the project's prose style where one exists.
 
 Leave enough context for the next contributor to understand what is where and how to work on it. The subagent changing a feature should update its docs too. If several agents are working on the same docs, give one of them ownership so they don't overwrite each other.
 

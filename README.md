@@ -12,19 +12,19 @@ With Node.js and npm available, run:
 npx skills add mikeploythai/skills
 ```
 
-Follow the prompts to choose the skills, agent, and installation scope. See the [skills CLI docs](https://skills.sh/docs/cli) for other options.
+Follow the prompts to choose the skills, agent, and installation scope. See the [Skills CLI docs](https://skills.sh/docs/cli) for other options.
 
 For a manual install, copy the folders you want from `skills/` into your agent's skill directory. Keep each folder's instructions and references together. Use the skill directory documented by your agent.
 
 ## Available skills
 
-### [mikes-way](skills/mikes-way/README.md)
+### [Mike's way](skills/mikes-way/README.md)
 
-My rules and preferences for how agents work: delegate, reuse what's already there, verify changes, and keep contributor docs useful. Includes model and API design, interface guidance, [stack preferences](skills/mikes-way/references/stack-preferences.md), a [Vite+ configuration](skills/mikes-way/references/vite-plus-config.md), and code defaults that respect the repo's existing conventions.
+My rules and preferences for how agents work: delegate, reuse what's already there, verify changes, and keep contributor docs useful. Includes model and API design, interface guidance, [stack preferences](skills/mikes-way/references/stack-preferences.md), [frontend toolchain guidance](skills/mikes-way/references/frontend-toolchain.md), and code defaults that respect the repo's existing conventions.
 
-### [setup-codex](skills/setup-codex/README.md)
+### [Setup Codex](skills/setup-codex/README.md)
 
-Install, update, preview, or explain mikeploythai's opinionated Codex multi-agent setup. It uses sol at xhigh for orchestration and review, luna for focused workers, and preserves unrelated Codex configuration.
+Install, update, preview, or explain mikeploythai's opinionated Codex multi-agent setup. It uses `gpt-5.6-sol` at `xhigh` for orchestration and review, `gpt-5.6-luna` for focused workers, and preserves unrelated Codex configuration.
 
 ## Optional companions
 
@@ -42,4 +42,4 @@ See [design task routing](skills/mikes-way/references/interface-design.md#choosi
 
 ## Credits
 
-The bundled references include Lauren Tan's Unslop and a standalone adaptation of Blast Radius. See [upstream notices](skills/mikes-way/references/upstream-notices.md) for sources, changes, and license text.
+The bundled references include Lauren Tan's Unslop and a standalone adaptation of Blast radius. See [upstream notices](skills/mikes-way/references/upstream-notices.md) for sources, changes, and license text.

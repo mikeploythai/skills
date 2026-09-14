@@ -21,7 +21,7 @@ Follow the prompts to choose the Codex installation scope. See the [Skills CLI d
 Explicitly ask your agent to preview, install, or update the setup:
 
 ```text
-$setup-codex preview Mike's Codex setup.
+$setup-codex Preview Mike's Codex setup.
 ```
 
 The skill preserves unrelated configuration and only changes global Codex settings when explicitly asked to install or update the setup.

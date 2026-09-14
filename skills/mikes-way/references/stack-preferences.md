@@ -11,7 +11,7 @@ Prefer full-stack TypeScript, but keep the setup proportional to what we're buil
 - For a quick mockup, plain HTML, CSS, and JavaScript are fine. Add the Tailwind CLI, a small server, htmx, or Alpine.js if you need them.
 - For a site that's mostly content, use Astro. Keep the content in the project unless people need a CMS to edit it. Sanity and self-hosted Payload are the preferences there.
 - For an app without SSR, start with Vite and Convex.
-- If the app needs a traditional server, use Vite with Elysia or Hono. Elysia is the current preference. Expose OpenAPI and generate the client with HeyAPI's Vite plugin and its TanStack Query integration.
+- If the app needs a traditional server, use Vite with Elysia or Hono. Elysia is the current preference. Expose OpenAPI and generate the client with Hey API's Vite plugin and its TanStack Query integration.
 - Use TanStack Start or Next.js App Router if the app needs SSR or benefits from keeping the frontend and backend in one framework.
 
 Default new web apps and mockups to no indexing until the user says they should be discoverable. Add a `robots.txt` that disallows all crawlers, plus a `noindex, nofollow` meta tag or `X-Robots-Tag` response header. Remove them when indexing is wanted. Robots directives are not access control.
@@ -20,7 +20,19 @@ Default new web apps and mockups to no indexing until the user says they should 
 
 Use [Vite+](https://viteplus.dev/guide/) for the web toolchain. Let it manage Node.js, pnpm, Vite, Vitest, Oxlint, and Oxfmt, and use the `vp` commands. Stick with pnpm unless the project already uses or requires something else.
 
-Use pnpm workspaces for a monorepo. Add Turborepo if you need its task dependencies, caching, or remote execution. Make the dev command start the server and wait for its OpenAPI document before starting the frontend. HeyAPI needs the server running to generate the client. If you're using Drizzle, start Drizzle studio too.
+For a new frontend, Mike prefers scaffolding with Vite+ and pnpm:
+
+```sh
+vp create vite@latest --package-manager pnpm
+```
+
+Immediately after initialization, run this from the newly created app directory:
+
+```sh
+pnpm up --latest
+```
+
+Use pnpm workspaces for a monorepo. Add Turborepo if you need its task dependencies, caching, or remote execution. Make the dev command start the server and wait for its OpenAPI document before starting the frontend. Hey API needs the server running to generate the client. If you're using Drizzle, start Drizzle Studio too.
 
 Keep linting and formatting under one `check` script. Add the database and UI shortcuts if those tools are in the project:
 
@@ -36,11 +48,11 @@ Keep linting and formatting under one `check` script. Add the database and UI sh
 
 Use Vitest for code tests. Use Playwright for browser tests that need to run in CI or catch a regression. For a one-off check, have the subagent(s) use the browser and try the flow.
 
-### Vite+ configuration
+### Frontend toolchain
 
-Read [Vite+ configuration](vite-plus-config.md) when setting up or changing Vite+. It covers lint and format defaults, required JS-plugin dev dependencies, TanStack-only presets and route overrides, and the `@tailwindcss/vite` dev dependency preference. Use the Oxc React compiler integration if supported, with `oxc-transform-react` as a dev dependency and the replaced Babel setup removed.
+Read [frontend toolchain guidance](frontend-toolchain.md) when setting up or changing Vite+, linting, or styling integrations. It covers lint and format defaults, required JS-plugin dev dependencies, TanStack-only presets and route overrides, and the `@tailwindcss/vite` dev dependency preference. Use the Oxc React Compiler integration if supported, with `oxc-transform-react` as a dev dependency and the replaced Babel setup removed.
 
-For Tailwind v4 projects, include [shadcn's lint plugin](https://github.com/shadcn-ui/lint) in `vite.config.ts` under `lint.jsPlugins`, following the compatibility and configuration guidance in [Vite+ configuration](vite-plus-config.md#tailwind-design-system-linting). It works without shadcn/ui. Prefer `no-restyle`, `no-raw-colors`, `no-arbitrary-values`, `no-unknown-classes`, and `require-static-classes`, with the layout allowances and design-system source overrides in that reference. Preserve other existing rule policies and use narrow, accepted exceptions.
+For Tailwind v4 projects, include [shadcn's lint plugin](https://github.com/shadcn-ui/lint) in `vite.config.ts` under `lint.jsPlugins`, following the compatibility and configuration guidance in [frontend toolchain guidance](frontend-toolchain.md#tailwind-design-system-linting). It works without shadcn/ui. Prefer `no-restyle`, `no-raw-colors`, `no-arbitrary-values`, `no-unknown-classes`, and `require-static-classes`, with the layout allowances and design-system source overrides in that reference. Preserve other existing rule policies and use narrow, accepted exceptions.
 
 When a Vite app needs local HTTPS, use `vite-plugin-mkcert`. Add it as a dev dependency and add `mkcert()` to the Vite plugins. Use the HTTPS origin for MSAL React development and match it in the app's registered redirect URI.
 
@@ -63,7 +75,7 @@ folderA/
 folderB.onlyPage.$id.tsx
 ```
 
-Dot notation is fine for a nest with only one page, as in the `folderB` example. Apply the route filename lint override and project-level VS Code settings in [Vite+ configuration](vite-plus-config.md).
+Dot notation is fine for a nest with only one page, as in the `folderB` example. Apply the route filename lint override and project-level VS Code settings in [frontend toolchain guidance](frontend-toolchain.md).
 
 #### Shadcn CLI
 
@@ -98,7 +110,7 @@ For the rest, these are the preferences. Add them as you need them:
 
 Prefer Hugeicons or Lucide for icons. Use Tailwind CSS with proper design tokens. StyleX is worth considering for a custom design system built on Base UI or React Aria, but its stricter styling model comes at the cost of human developer experience.
 
-When using StyleX, follow the [StyleX setup](vite-plus-config.md#stylex) for the `sx.ts` namespace helper, optional `WithStyleX<T>` prop, matching `importSources`, and local Vite-plugin type declaration when the installed export is untyped.
+When using StyleX, follow the [StyleX setup](frontend-toolchain.md#stylex) for the `sx.ts` namespace helper, optional `WithStyleX<T>` prop, matching `importSources`, and local Vite-plugin type declaration when the installed export is untyped.
 
 Use Fontsource for app fonts. Instrument Sans and Cascadia Code are the current favorites. Other fonts to consider are Inter, Space Mono, JetBrains Mono, Space Grotesk, Manrope, Figtree, DM Mono, Bricolage Grotesque, Mona Sans, Unbounded, Roboto Flex, Google Sans, and Google Sans Flex. Pick something that suits the app. Don't use the same font for everything just because it's on this list.
 
@@ -108,7 +120,7 @@ Prefer Convex for the backend. Check what it and its components already do befor
 
 Prefer Better Auth. Use Clerk if the user wants managed auth. Use Resend for email, though Nodemailer is fine for something small or an integration that needs it.
 
-For a traditional server, use Elysia or Hono and generate the frontend client from OpenAPI with HeyAPI's Vite plugin. Use Drizzle if you need an ORM. For data:
+For a traditional server, use Elysia or Hono and generate the frontend client from OpenAPI with Hey API's Vite plugin. Use Drizzle if you need an ORM. For data:
 
 - Use Cloudflare D1 for SQLite, or local Node.js SQLite for isolated development data. Use Durable Objects when the app needs their coordination model.
 - Use Neon or PlanetScale for Postgres, after checking the cost with the user.
@@ -123,13 +135,13 @@ Prefer Cloudflare for infrastructure. One account can cover hosting, domains, se
 
 When asked to prepare an app for Cloudflare deployment, target Cloudflare Workers and make the project ready for deployment from Cloudflare's web dashboard. Use Wrangler tooling and configuration when useful, but don't run `wrangler deploy` unless Mike explicitly asks.
 
-Start with PostHog for observability. Use Sentry if you need more help diagnosing errors. For simple analytics, self-hosted Umami with Postgres or one dollar stats is enough.
+Start with PostHog for observability. Use Sentry if you need more help diagnosing errors. For simple analytics, self-hosted Umami with Postgres or One Dollar Stats is enough.
 
 ## Mike's work environment
 
 This part is mostly for Mike's day job, where production runs on on-prem IIS and Microsoft SQL Server. There's still .NET Framework, with a move toward modern .NET. It might help someone working in a similar setup, but don't assume every project has these constraints.
 
-Use a Vite frontend and generate the OpenAPI client with HeyAPI's Vite plugin. A small server can use `.ashx` handlers and `NSwag.Generation`. On .NET Framework, prefer Microsoft ASP.NET Web API with OWIN if the app supports it. On modern .NET, use minimal APIs. Build the frontend into `wwwroot` if that's where the IIS app serves it from.
+Use a Vite frontend and generate the OpenAPI client with Hey API's Vite plugin. A small server can use `.ashx` handlers and `NSwag.Generation`. On .NET Framework, prefer Microsoft ASP.NET Web API with OWIN if the app supports it. On modern .NET, use minimal APIs. Build the frontend into `wwwroot` if that's where the IIS app serves it from.
 
 Use MSAL React in the browser, `Microsoft.Identity.Web` on the server, and the Microsoft Graph SDK for Microsoft 365 integration. Prefer Azure Key Vault for secrets. The fallback is gitignored `secrets.config` for `<appSettings>` and `database.config` for connection strings.
 

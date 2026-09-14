@@ -19,7 +19,7 @@ Shared components own reusable appearance; callers arrange them within a page. T
 - Keep exceptions narrow. Permission to adjust spacing does not justify raw colors or arbitrary appearance values. Explain the approved alternative when rejecting a change.
 - Review new tokens, variants, styling permissions, and suppressions as design decisions. Record accepted changes in existing design docs, following [contributor documentation](contributor-docs.md). Automated checks enforce policy; they cannot decide whether a treatment belongs in the system.
 
-Adapted from [shadcn's design-system guidance](https://github.com/shadcn-ui/lint/blob/main/docs/design-systems.md). These principles do not require its linter. For Tailwind enforcement, use [Vite+ configuration](vite-plus-config.md#tailwind-design-system-linting).
+Adapted from [shadcn's design-system guidance](https://github.com/shadcn-ui/lint/blob/main/docs/design-systems.md). These principles do not require its linter. For Tailwind enforcement, use [frontend toolchain guidance](frontend-toolchain.md#tailwind-design-system-linting).
 
 ## Companion skills
 

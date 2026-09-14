@@ -12,7 +12,7 @@ With Node.js and npm available, run:
 npx skills add mikeploythai/skills --skill mikes-way
 ```
 
-Follow the prompts to choose the agent and installation scope. See the [skills CLI docs](https://skills.sh/docs/cli) for other options.
+Follow the prompts to choose the agent and installation scope. See the [Skills CLI docs](https://skills.sh/docs/cli) for other options.
 
 For a manual install, copy `skills/mikes-way/` into your agent's skill directory as `mikes-way`. Keep its `SKILL.md` and `references/` together; the skill reads those references as needed. Use the skill directory documented by your agent.
 
@@ -21,12 +21,12 @@ For a manual install, copy `skills/mikes-way/` into your agent's skill directory
 Ask your agent to use it with a concrete task:
 
 ```text
-$mikes-way add saved views to this app.
+$mikes-way Add saved views to this app.
 ```
 
 The skill asks the agent to delegate work, reuse existing capabilities, check what a change could break, and keep feature and design documentation current. Existing repo conventions take priority over its code defaults.
 
-When choosing a stack, the agent reads [stack preferences](references/stack-preferences.md) for the tools Mike likes working with. It also includes the [Vite+ lint and format configuration](references/vite-plus-config.md). These are suggestions, so a working project doesn't need to change stacks to use the skill.
+When choosing a stack, the agent reads [stack preferences](references/stack-preferences.md) for the tools Mike likes working with. It also includes [frontend toolchain guidance](references/frontend-toolchain.md) for Vite+, linting, styling integrations, and editor settings. These are suggestions, so a working project doesn't need to change stacks to use the skill.
 
 The feature map grows as features land. `DESIGN.md` waits until there's an established design direction, so an early mockup doesn't accidentally become the standard.
 
@@ -48,4 +48,4 @@ See [design task routing](references/interface-design.md#choosing-skills-by-task
 
 ## Credits
 
-The bundled references include Lauren Tan's Unslop and a standalone adaptation of Blast Radius. See [upstream notices](references/upstream-notices.md) for sources, changes, and license text.
+The bundled references include Lauren Tan's Unslop and a standalone adaptation of Blast radius. See [upstream notices](references/upstream-notices.md) for sources, changes, and license text.
