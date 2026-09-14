@@ -22,6 +22,10 @@ For a manual install, copy the folders you want from `skills/` into your agent's
 
 My rules and preferences for how agents work: delegate, reuse what's already there, verify changes, and keep contributor docs useful. Includes model and API design, interface guidance, [stack preferences](skills/mikes-way/references/stack-preferences.md), [frontend toolchain guidance](skills/mikes-way/references/frontend-toolchain.md), and code defaults that respect the repo's existing conventions.
 
+### [Setup Claude](skills/setup-claude/README.md)
+
+Install, update, preview, or explain mikeploythai's opinionated Claude Code multi-agent setup. It uses Fable 5.1 for orchestration and review, Sonnet 5 for focused workers, and preserves unrelated Claude Code configuration.
+
 ### [Setup Codex](skills/setup-codex/README.md)
 
 Install, update, preview, or explain mikeploythai's opinionated Codex multi-agent setup. It uses `gpt-5.6-sol` at `xhigh` for orchestration and review, `gpt-5.6-luna` for focused workers, and preserves unrelated Codex configuration.
