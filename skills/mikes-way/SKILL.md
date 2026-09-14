@@ -62,7 +62,7 @@ or the check cannot run, and do not let the check block the requested work.
 
 ## interface quality
 
-before designing, implementing, or reviewing interfaces, read [interface design](references/interface-design.md). give your subagent(s) the relevant guidance and the design decisions already made for the project.
+before designing, implementing, or reviewing interfaces, read [interface design](references/interface-design.md) and use its task routing to select the relevant installed companion skills. give your subagent(s) the selected skill names, relevant guidance, and the design decisions already made for the project.
 
 ## optional companions
 

@@ -38,6 +38,8 @@ these aren't required, but heavily encouraged to install:
 
 missing companions shouldn't hold up tasks. the agent can recommend one when it would help once, but won't install it without approval.
 
+see [design task routing](skills/mikes-way/references/interface-design.md#choosing-skills-by-task) for which skills handle prototyping, implementation, reviews, motion planning, testing, and terminology.
+
 ## credits
 
 the bundled references include lauren tan's unslop and a standalone adaptation of blast radius. see [upstream notices](skills/mikes-way/references/upstream-notices.md) for sources, changes, and license text.
