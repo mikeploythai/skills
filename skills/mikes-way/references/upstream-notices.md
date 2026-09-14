@@ -4,7 +4,7 @@ This file records sources and license notices for bundled third-party material. 
 
 ## Pstack
 
-[unslop.md](unslop.md) is reproduced from Lauren Tan's [Unslop skill at revision 7366ac128bdf95f45e6734f412b49a4031800169](https://github.com/cursor/plugins/blob/7366ac128bdf95f45e6734f412b49a4031800169/pstack/skills/unslop/SKILL.md), with its skill frontmatter removed and attribution added.
+[unslop.md](unslop.md) is reproduced from Lauren Tan's [Unslop skill at revision 7366ac128bdf95f45e6734f412b49a4031800169](https://github.com/cursor/plugins/blob/7366ac128bdf95f45e6734f412b49a4031800169/pstack/skills/unslop/SKILL.md), with its skill frontmatter removed, attribution added, and minor capitalization edits. Its rule numbers and guidance are unchanged.
 
 [blast-radius.md](blast-radius.md) is adapted for standalone use from Lauren Tan's [Blast radius skill at revision c5db7fef1f1b1ebb2d4b7ae0308bf4beb10cb4c1](https://github.com/cursor/plugins/blob/c5db7fef1f1b1ebb2d4b7ae0308bf4beb10cb4c1/pstack/skills/blast-radius/SKILL.md), fetched September 10, 2026. The workflow, evidence ladder, and reporting format are retained. The exact adaptations are:
 

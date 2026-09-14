@@ -1,85 +1,63 @@
 ---
 name: setup-codex
-description: install, update, preview, or explain mikeploythai's opinionated codex multi-agent setup. use only when the user explicitly invokes $setup-codex or /setup-codex, or explicitly asks for mike's codex setup. do not use for ordinary codex questions or software-development work.
+description: Install, update, preview, or explain mikeploythai's opinionated Codex multi-agent setup. Use only when the user explicitly invokes $setup-codex or /setup-codex, or explicitly asks for Mike's Codex setup. Do not use for ordinary Codex questions or software-development work.
 ---
 
-# setup codex
+# Setup Codex
 
-install a cost-effective codex configuration with a capable orchestrator,
-focused workers, and independent review.
+Install a cost-effective Codex configuration with a capable orchestrator, focused workers, and independent review.
 
-## weekly update check
+## Weekly update check
 
-on mondays, compare this skill's installed `skillFolderHash` with the git tree
-sha for `skills/setup-codex` on the `main` branch of `mikeploythai/skills`.
-this check must be read-only. do not run `npx skills check`, because it updates
-skills.
+On Mondays, compare this skill's installed `skillFolderHash` with the Git tree SHA for `skills/setup-codex` on the `main` branch of `mikeploythai/skills`. This check must be read-only. Do not run `npx skills check`, because it updates skills.
 
-if the hashes differ, ask the user whether they want to update. only after they
-approve, run `npx skills update setup-codex`. stay quiet when the skill is
-current or the check cannot run, and do not let the check block the requested
-work.
+If the hashes differ, ask the user whether they want to update. Only after they approve, run `npx skills update setup-codex`. Stay quiet when the skill is current or the check cannot run, and do not let the check block the requested work.
 
-## setup
+## Setup
 
-- orchestrator: `gpt-5.6-sol` at `xhigh`.
-- researcher: `gpt-5.6-luna` at `max`, read-only.
-- engineer: `gpt-5.6-luna` at `max`, workspace-write.
-- reviewer: `gpt-5.6-sol` at `xhigh`, read-only.
-- up to four concurrent agent threads.
-- on-request approvals, workspace-write sandboxing, live web search,
-  concise reasoning summaries, low verbosity, pragmatic personality, and
-  experimental context management.
+- Orchestrator: `gpt-5.6-sol` at `xhigh`.
+- Researcher: `gpt-5.6-luna` at `max`, read-only.
+- Engineer: `gpt-5.6-luna` at `max`, workspace-write.
+- Reviewer: `gpt-5.6-sol` at `xhigh`, read-only.
+- Up to four concurrent agent threads.
+- On-request approvals, workspace-write sandboxing, live web search, concise reasoning summaries, low verbosity, pragmatic personality, and experimental context management.
 
-read [the configuration reference](references/configuration.md) for the
-exact settings and agent definitions before previewing or applying them.
+Read [the configuration reference](references/configuration.md) for the exact settings and agent definitions before previewing or applying them.
 
-## marketplace plugins
+## Marketplace plugins
 
-recommend the GitHub and Linear marketplace plugins. during preview, report
-whether each is installed and connected. when available, use GitHub for
-repository, issue, and pull-request work, and Linear for project and issue
-workflows.
+Recommend the GitHub and Linear marketplace plugins. During preview, report whether each is installed and connected. When available, use GitHub for repository, issue, and pull-request work, and Linear for project and issue workflows.
 
-do not install plugins, connect accounts, or change permissions unless the
-user explicitly asks. missing plugins do not block the core codex setup.
+Do not install plugins, connect accounts, or change permissions unless the user explicitly asks. Missing plugins do not block the core Codex setup.
 
-## safety boundary
+## Safety boundary
 
-treat requests to show, preview, explain, or review the setup as read-only.
-modify the user's codex configuration only when they explicitly ask to
-install or update the setup.
+Treat requests to show, preview, explain, or review the setup as read-only. Modify the user's Codex configuration only when they explicitly ask to install or update the setup.
 
-an explicit install or update request authorizes the non-conflicting changes
-defined by this skill. do not ask for another confirmation unless applying
-the setup would discard existing configuration or agent instructions.
+An explicit install or update request authorizes the non-conflicting changes defined by this skill. Do not ask for another confirmation unless applying the setup would discard existing configuration or agent instructions.
 
-determine the user's codex home before editing. use the configured codex
-home when one exists; otherwise use `~/.codex`.
+Determine the user's Codex home before editing. Use the configured Codex home when one exists; otherwise use `~/.codex`.
 
-inspect these before making changes:
+Inspect these before making changes:
 
 - `config.toml`
 - `agents/researcher.toml`
 - `agents/engineer.toml`
 - `agents/reviewer.toml`
 
-preserve unrelated settings, comments, profiles, mcp servers, skills,
-providers, and agent files. never replace the entire `config.toml` with the
-reference example or append duplicate keys.
+Preserve unrelated settings, comments, profiles, MCP servers, skills, providers, and agent files. Never replace the entire `config.toml` with the reference example or append duplicate keys.
 
-if a target agent file already exists:
+If a target agent file already exists:
 
-- leave it unchanged when its effective contents match the reference.
-- update it when it is clearly an earlier version of this setup.
-- if it contains different custom instructions, show the conflict and ask
-  the user whether to preserve, merge, or replace it.
+- Leave it unchanged when its effective contents match the reference.
+- Update it when it is clearly an earlier version of this setup.
+- If it contains different custom instructions, show the conflict and ask the user whether to preserve, merge, or replace it.
 
-before changing an existing file, create a timestamped backup beside it.
+Before changing an existing file, create a timestamped backup beside it.
 
-## apply
+## Apply
 
-merge only the settings owned by this setup:
+Merge only the settings owned by this setup:
 
 - `model`
 - `model_reasoning_effort`
@@ -96,18 +74,13 @@ merge only the settings owned by this setup:
 - `personality`
 - `features.context_management.experimental_mode`
 
-install the three agent definitions from the configuration reference.
-create missing directories as needed.
+Install the three agent definitions from the configuration reference. Create missing directories as needed.
 
-write complete files through temporary files and replace their targets only
-after the resulting toml parses successfully.
+Write complete files through temporary files and replace their targets only after the resulting TOML parses successfully.
 
-## automatically use mike's way
+## Automatically use Mike's way
 
-after setup, explain that the user can optionally make `$mikes-way` the
-default for software development work. setup alone does not enable this.
-if they ask to "automate mike's way" or otherwise enable that default, add
-the following block to `<codex-home>/AGENTS.md`:
+After setup, explain that the user can optionally make `$mikes-way` the default for software development work. Setup alone does not enable this. If they ask to "automate Mike's way" or otherwise enable that default, add the following block to `<codex-home>/AGENTS.md`:
 
 ```markdown
 <!-- MIKES_WAY_START -->
@@ -117,40 +90,22 @@ Use $mikes-way by default for software development work. Its engineering-manager
 <!-- MIKES_WAY_END -->
 ```
 
-confirm that `mikes-way` is installed before reporting it as enabled.
-if it is missing, explain that it needs to be installed first.
+Confirm that `mikes-way` is installed before reporting it as enabled. If it is missing, explain that it needs to be installed first.
 
-read the existing global instructions and preserve everything outside this
-marked block. create `AGENTS.md` if missing; leave an identical block alone
-and update an existing marked block instead of adding a duplicate. use the
-backup procedure above before changing an existing file. if the block has
-conflicting custom instructions, show the conflict before replacing them.
+Read the existing global instructions and preserve everything outside this marked block. Create `AGENTS.md` if it is missing. Leave an identical block alone and update an existing marked block instead of adding a duplicate. Use the backup procedure above before changing an existing file. If the block has conflicting custom instructions, show the conflict before replacing them.
 
-check for `<codex-home>/AGENTS.override.md`, which can take precedence over
-`AGENTS.md`. if it would hide the new block, explain that and resolve the
-instruction location with the user rather than claiming the default is active.
-see [Codex's instruction discovery rules](https://learn.chatgpt.com/docs/agent-configuration/agents-md).
+Check for `<codex-home>/AGENTS.override.md`, which can take precedence over `AGENTS.md`. If it would hide the new block, explain that and resolve the instruction location with the user rather than claiming the default is active. See [Codex's instruction discovery rules](https://learn.chatgpt.com/docs/agent-configuration/agents-md).
 
-after an opted-in update, read the file back and verify that the exact block
-appears once and unrelated instructions are unchanged. this option changes
-global instructions only; it does not rerun the rest of setup.
+After an opted-in update, read the file back and verify that the exact block appears once and unrelated instructions are unchanged. This option changes global instructions only; it does not rerun the rest of setup.
 
-## verify
+## Verify
 
-after applying the setup:
+After applying the setup:
 
-1. parse every changed toml file.
-2. confirm each owned setting has exactly one effective definition and the
-   expected value.
-3. confirm all three agent files exist with their intended model, reasoning
-   effort, sandbox, and instructions.
-4. report the files changed, files created, backups written, and conflicts
-   left unresolved.
-5. tell the user to restart codex and start a new task for the setup to take
-   effect. if automatic mike's way is not already enabled, also tell them:
-   "you can restart codex now, or ask me to automate mike's way for all
-   engineering tasks first, then restart codex." if it is already enabled,
-   confirm that and give the restart instruction.
+1. Parse every changed TOML file.
+2. Confirm each owned setting has exactly one effective definition and the expected value.
+3. Confirm all three agent files exist with their intended model, reasoning effort, sandbox, and instructions.
+4. Report the files changed, files created, backups written, and conflicts left unresolved.
+5. Tell the user to restart Codex and start a new task for the setup to take effect. If automatic Mike's way is not already enabled, also tell them: "You can restart Codex now, or ask me to automate Mike's way for all engineering tasks first, then restart Codex." If it is already enabled, confirm that and give the restart instruction.
 
-if validation fails, restore the affected file from its backup and report
-the failure.
+If validation fails, restore the affected file from its backup and report the failure.
