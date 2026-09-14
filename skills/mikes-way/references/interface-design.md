@@ -1,89 +1,73 @@
-# interface design
+# Interface design
 
-give the interface some personality. color, typography, imagery, and motion are all encouraged, as long as the product still feels like something people can trust to do real work. it shouldn't feel like a toy. keep frequent actions easy to find and use; don't fill the screen with decorative cards or so much spacing that useful information gets pushed out.
+Give the interface some personality. Color, typography, imagery, and motion are all encouraged, as long as the product still feels like something people can trust to do real work. It shouldn't feel like a toy. Keep frequent actions easy to find and use; don't fill the screen with decorative cards or so much spacing that useful information gets pushed out.
 
-avoid ai-generated interface tells in shipped ui and mockups, especially hi-fi
-mockups. don't add eyebrow labels, headings that repeat nearby copy,
-explanations for self-evident controls, fake metrics, decorative cards, or
-visual effects without a product reason. every element should help someone act,
-understand the current state, or recover from a problem.
+Avoid AI-generated interface tells in shipped UI and mockups, especially hi-fi mockups. Don't add eyebrow labels, headings that repeat nearby copy, explanations for self-evident controls, fake metrics, decorative cards, or visual effects without a product reason. Every element should help someone act, understand the current state, or recover from a problem.
 
-look at the project's existing screens, components, client-side libraries, tokens, and design docs before changing things. build on the style and features that are already there. if a style hasn't been established yet, follow [contributor documentation](contributor-docs.md) before writing it down as the standard.
+Look at the project's existing screens, components, client-side libraries, tokens, and design docs before changing things. Build on the style and features that are already there. If a style hasn't been established yet, follow [contributor documentation](contributor-docs.md) before writing it down as the standard.
 
-think through the states people will actually run into: loading, empty, error, disabled, and success. keep labels clear, text readable, and controls usable with a keyboard, including a visible focus state. use the browser when available to try the flow at relevant screen sizes with realistic content. be clear about anything that couldn't be checked.
+Think through the states people will actually run into: loading, empty, error, disabled, and success. Keep labels clear, text readable, and controls usable with a keyboard, including a visible focus state. Use the browser when available to try the flow at relevant screen sizes with realistic content. Be clear about anything that couldn't be checked.
 
-when relevant, stress the real interface with dense lists, long and unbroken
-text, multilingual content, narrow widths, and short viewports. confirm actions
-that discard work, return focus after dialogs and validation errors, and respect
-reduced-motion settings. use shared components without leaving duplicates that
-shadow the customized version.
+When relevant, stress the real interface with dense lists, long and unbroken text, multilingual content, narrow widths, and short viewports. Confirm actions that discard work, return focus after dialogs and validation errors, and respect reduced-motion settings. Use shared components without leaving duplicates that shadow the customized version.
 
-## companion skills
+## Evolving the design system
 
-these can help with design taste. follow the guidance on optional companions in [mike's way](../SKILL.md):
+Shared components own reusable appearance; callers arrange them within a page. This applies to CSS, Tailwind, StyleX, and native component APIs.
 
-- [cloudflare's kumo design skill](https://github.com/cloudflare/kumo/tree/main/skills/kumo-design) has useful guidance even when the project doesn't use kumo. fit the visual choices to the project, and only use its component examples when those components are actually available. the skill doesn't require adopting the kumo ui library.
-- [jakub krehel's skills](https://github.com/jakubkrehel/skills) cover different parts of interface design and review. use the ones relevant to the work.
-- [emil kowalski's skills](https://github.com/emilkowalski/skills) cover interface
-  polish, component design, and deliberate motion.
+- Reuse named variants and sizes. Put a new reusable treatment in the owning component instead of repeating local overrides. Use semantic tokens.
+- Define caller-controlled styling explicitly through existing props, style APIs, or conventions. A container might accept spacing, a title typography, and an avatar size. Choose each boundary deliberately.
+- Keep exceptions narrow. Permission to adjust spacing does not justify raw colors or arbitrary appearance values. Explain the approved alternative when rejecting a change.
+- Review new tokens, variants, styling permissions, and suppressions as design decisions. Record accepted changes in existing design docs, following [contributor documentation](contributor-docs.md). Automated checks enforce policy; they cannot decide whether a treatment belongs in the system.
 
-## choosing skills by task
+Adapted from [shadcn's design-system guidance](https://github.com/shadcn-ui/lint/blob/main/docs/design-systems.md). These principles do not require its linter. For Tailwind enforcement, use [Vite+ configuration](vite-plus-config.md#tailwind-design-system-linting).
 
-choose the skill that matches the requested task and scope, then read it before
-acting. load its required companions and only the references relevant to that
-work. pass those choices to the agent doing the work. use the focused domain
-guidance below during ordinary implementation; a full audit is a separate task.
+## Companion skills
 
-| work | use | when and result |
+These can help with design taste. Follow the guidance on optional companions in [Mike's way](../SKILL.md):
+
+- [Cloudflare's Kumo design skill](https://github.com/cloudflare/kumo/tree/main/skills/kumo-design) has useful guidance even when the project doesn't use Kumo. Fit the visual choices to the project, and only use its component examples when those components are actually available. The skill doesn't require adopting the Kumo UI library.
+- [Jakub Krehel's skills](https://github.com/jakubkrehel/skills) cover different parts of interface design and review. Use the ones relevant to the work.
+- [Emil Kowalski's skills](https://github.com/emilkowalski/skills) cover interface polish, component design, and deliberate motion.
+
+## Choosing skills by task
+
+Choose the skill that matches the requested task and scope, then read it before acting. Load its required companions and only the references relevant to that work. Pass those choices to the agent doing the work. Use the focused domain guidance below during ordinary implementation; a full audit is a separate task.
+
+| Work | Use | When and result |
 | --- | --- | --- |
-| general guidelines | `emil-design-eng` | interface polish, component craft, and motion decisions that fit the product. |
-| interaction guidelines | `apple-design` | gestures, physical and interruptible motion, springs, depth, materials, and typography. adapt the principles to the product's established style. |
-| interface guidelines | `kumo-design` | interface conventions, dashboard usability, and design tokens. its guidelines apply without the kumo ui library; use component examples only when those components are available. |
-| visual prototyping | `variant` | compare versions of a component in its real page context, varying one primary axis such as layout, density, emphasis, typography, or voice. |
-| broader prototyping | `prototype` | compare distinct layout, motion, or interaction directions in an isolated prototype surface with realistic surrounding context. |
-| web motion implementation | `animate` | build an animation or implement a requested motion fix. writes code for timing, curves, properties, interruption, exits, and reduced motion. |
-| native motion implementation | `animate-expo` | build or fix react native and expo animations, gestures, sheets, transitions, and haptics. writes code for the native stack. |
-| comprehensive interface audit | `better-interface` | review an existing screen or flow across accessibility, layout, writing, typography, color, and ui polish. coordinates the domain owners below into one report. |
-| focused interface audit | the relevant `better-*` skill below | review one named domain without starting a comprehensive interface audit. |
-| interface change review | `interface-review` | review a branch, pull request, commit range, or uncommitted changes. resolves the diff, affected surfaces, and finding statuses, then hands them to `better-interface`, which routes the domain owners. |
-| motion change review | `review-animations` | review one animation or motion diff, with concrete findings and proposed fixes. |
-| motion discovery | `find-animation-opportunities` | identify where motion would help and where it should be avoided. proposes opportunities; does not implement them. |
-| motion audit and planning | `improve-animations` | audit existing motion across a codebase and write selected implementation plans in `plans/`. hand plans to `animate` or `animate-expo` for implementation. its explicit `execute` mode dispatches an implementing subagent. |
-| reverse engineering | `explain-interface` | explain how an existing interface or visual effect is built and what each layer contributes. a screenshot supports reconstruction, not verified implementation, motion, or timing. gives no audit verdict. |
-| component stress testing | `break` | stress one existing component with fixture props and states it can actually reach. use difficult content and viewport sizes on a temporary page; report observed breaks without fixes or a verdict. leave the page available for manual review until cleanup is requested. |
-| motion terminology | `animation-vocabulary` | turn a described effect into the right term for discussion or prompting. this is a glossary, not an implementation workflow. |
+| General guidelines | `emil-design-eng` | Interface polish, component craft, and motion decisions that fit the product. |
+| Interaction guidelines | `apple-design` | Gestures, physical and interruptible motion, springs, depth, materials, and typography. Adapt the principles to the product's established style. |
+| Interface guidelines | `kumo-design` | Interface conventions, dashboard usability, and design tokens. Its guidelines apply without the Kumo UI library; use component examples only when those components are available. |
+| Visual prototyping | `variant` | Compare versions of a component in its real page context, varying one primary axis such as layout, density, emphasis, typography, or voice. |
+| Broader prototyping | `prototype` | Compare distinct layout, motion, or interaction directions in an isolated prototype surface with realistic surrounding context. |
+| Web motion implementation | `animate` | Build an animation or implement a requested motion fix. Writes code for timing, curves, properties, interruption, exits, and reduced motion. |
+| Native motion implementation | `animate-expo` | Build or fix React Native and Expo animations, gestures, sheets, transitions, and haptics. Writes code for the native stack. |
+| Comprehensive interface audit | `better-interface` | Review an existing screen or flow across accessibility, layout, writing, typography, color, and UI polish. Coordinates the domain owners below into one report. |
+| Focused interface audit | The relevant `better-*` skill below | Review one named domain without starting a comprehensive interface audit. |
+| Interface change review | `interface-review` | Review a branch, pull request, commit range, or uncommitted changes. Resolves the diff, affected surfaces, and finding statuses, then hands them to `better-interface`, which routes the domain owners. |
+| Motion change review | `review-animations` | Review one animation or motion diff, with concrete findings and proposed fixes. |
+| Motion discovery | `find-animation-opportunities` | Identify where motion would help and where it should be avoided. Proposes opportunities; does not implement them. |
+| Motion audit and planning | `improve-animations` | Audit existing motion across a codebase and write selected implementation plans in `plans/`. Hand plans to `animate` or `animate-expo` for implementation. Its explicit `execute` mode dispatches an implementing subagent. |
+| Reverse engineering | `explain-interface` | Explain how an existing interface or visual effect is built and what each layer contributes. A screenshot supports reconstruction, not verified implementation, motion, or timing. Gives no audit verdict. |
+| Component stress testing | `break` | Stress one existing component with fixture props and states it can actually reach. Use difficult content and viewport sizes on a temporary page; report observed breaks without fixes or a verdict. Leave the page available for manual review until cleanup is requested. |
+| Motion terminology | `animation-vocabulary` | Turn a described effect into the right term for discussion or prompting. This is a glossary, not an implementation workflow. |
 
-### focused domain guidance and audits
+### Focused domain guidance and audits
 
-use these skills both for guidance while building and for a requested audit of
-their domain. `better-interface` owns consolidation when the task spans the
-whole interface; `interface-review` owns change scope when the task names a diff.
+Use these skills both for guidance while building and for a requested audit of their domain. `better-interface` owns consolidation when the task spans the whole interface; `interface-review` owns change scope when the task names a diff.
 
-| focus | use |
+| Focus | Use |
 | --- | --- |
-| semantics, accessible names, keyboard use, focus, hit-area requirements, and reduced motion | `better-accessibility` |
-| grouping, alignment, reading order, density, responsive layout, and disclosure | `better-layout` |
-| labels, messages, terminology, and product copy | `better-writing` |
-| type scale, spacing, wrapping, truncation, and font details | `better-typography` |
-| palettes, semantic tokens, contrast, themes, and color conversions | `better-colors` |
-| radii, optical alignment, surface depth, contextual icons, and press feedback | `better-ui` |
+| Semantics, accessible names, keyboard use, focus, hit-area requirements, and reduced motion | `better-accessibility` |
+| Grouping, alignment, reading order, density, responsive layout, and disclosure | `better-layout` |
+| Labels, messages, terminology, and product copy | `better-writing` |
+| Type scale, spacing, wrapping, truncation, and font details | `better-typography` |
+| Palettes, semantic tokens, contrast, themes, and color conversions | `better-colors` |
+| Radii, optical alignment, surface depth, contextual icons, and press feedback | `better-ui` |
 
-### selection and execution boundaries
+### Selection and execution boundaries
 
-- honor a skill the user names, and preserve each skill's invocation policy.
-  the reviewed skills and codex metadata make `prototype`, `variant`,
-  `review-animations`, `explain-interface`, and `break` explicit-only. the table
-  describes which fits; it does not enable automatic invocation. both prototyping
-  skills present working alternatives and wait for the user's choice before
-  promoting a winner.
-- reviews, audits, explanations, and motion planning keep application source
-  read-only by default. planning and testing may write their working artifacts.
-  implement findings only when implementation is requested, following the
-  selected skill's workflow. follow `improve-animations`' finding-selection step
-  before writing plans. it does not apply fixes itself; its explicit `execute`
-  mode hands implementation to a subagent.
-- keep stress fixtures and prototype harnesses out of shipped production entry
-  points and live writes. follow `break`'s cleanup rules for testing artifacts.
-- if a companion is missing, follow the optional-companion guidance above. if
-  the selected skill requires a missing owner or dependency, follow its stated
-  fallback or stopping rule and report the coverage gap.
+- Honor a skill the user names, and preserve each skill's invocation policy. The reviewed skills and Codex metadata make `prototype`, `variant`, `review-animations`, `explain-interface`, and `break` explicit-only. The table describes which fits; it does not enable automatic invocation. Both prototyping skills present working alternatives and wait for the user's choice before promoting a winner.
+- Reviews, audits, explanations, and motion planning keep application source read-only by default. Planning and testing may write their working artifacts. Implement findings only when implementation is requested, following the selected skill's workflow. Follow `improve-animations`' finding-selection step before writing plans. It does not apply fixes itself; its explicit `execute` mode hands implementation to a subagent.
+- Keep stress fixtures and prototype harnesses out of shipped production entry points and live writes. Follow `break`'s cleanup rules for testing artifacts.
+- If a companion is missing, follow the optional-companion guidance above. If the selected skill requires a missing owner or dependency, follow its stated fallback or stopping rule and report the coverage gap.

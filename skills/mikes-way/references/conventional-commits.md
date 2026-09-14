@@ -1,5 +1,11 @@
 # Conventional Commits
 
+## Mike's scope preference
+
+Default to commits without a scope, such as `feat: scaffold frontend`. Add a scope when it helps distinguish meaningful parts of the repository. For example, if the frontend later becomes a monorepo with separate web and API projects, use `feat(web): add dashboard` and `feat(api): add endpoint`. Do not invent scopes for a single project just to fill the optional field. Follow an established repository scope convention when one exists.
+
+## Upstream specification
+
 > Taken from https://www.conventionalcommits.org/en/v1.0.0/#specification on 2026-09-09.
 
 The key words “MUST”, “MUST NOT”, “REQUIRED”, “SHALL”, “SHALL NOT”, “SHOULD”, “SHOULD NOT”, “RECOMMENDED”, “MAY”, and “OPTIONAL” in this document are to be interpreted as described in RFC 2119.
