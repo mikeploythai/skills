@@ -50,9 +50,9 @@ Use Vitest for code tests. Use Playwright for browser tests that need to run in 
 
 ### Frontend toolchain
 
-Read [frontend toolchain guidance](frontend-toolchain.md) when setting up or changing Vite+, linting, or styling integrations. It covers lint and format defaults, required JS-plugin dev dependencies, TanStack-only presets and route overrides, and the `@tailwindcss/vite` dev dependency preference. Use the Oxc React Compiler integration if supported, with `oxc-transform-react` as a dev dependency and the replaced Babel setup removed.
+Read [frontend toolchain guidance](frontend-toolchain.md) when setting up or changing Vite+, linting, or styling integrations. It covers Mike's `vite.config.ts`, required lint-plugin dev dependencies, TanStack-only presets, `resolve.tsconfigPaths` for aliases, and the `@tailwindcss/vite` dev dependency preference. Use the Oxc React Compiler through `reactVite({ compiler: true })` with `oxc-transform-react` as a dev dependency, and remove the Babel compiler setup it replaces.
 
-For Tailwind v4 projects, include [shadcn's lint plugin](https://github.com/shadcn-ui/lint) in `vite.config.ts` under `lint.jsPlugins`, following the compatibility and configuration guidance in [frontend toolchain guidance](frontend-toolchain.md#tailwind-design-system-linting). It works without shadcn/ui. Prefer `no-restyle`, `no-raw-colors`, `no-arbitrary-values`, `no-unknown-classes`, and `require-static-classes`, with the layout allowances and design-system source overrides in that reference. Preserve other existing rule policies and use narrow, accepted exceptions.
+For Tailwind v4 projects, extend Ultracite's `shadcn` preset in `vite.config.ts`, following the compatibility and configuration guidance in [frontend toolchain guidance](frontend-toolchain.md#tailwind-design-system-linting). It works without shadcn/ui. Keep its six rules on, with the layout allowances and design-system source override it ships. Preserve other existing rule policies and use narrow, accepted exceptions.
 
 When a Vite app needs local HTTPS, use `vite-plugin-mkcert`. Add it as a dev dependency and add `mkcert()` to the Vite plugins. Use the HTTPS origin for MSAL React development and match it in the app's registered redirect URI.
 
@@ -61,8 +61,8 @@ When a Vite app needs local HTTPS, use `vite-plugin-mkcert`. Add it as a dev dep
 Start with React, React Compiler, and TanStack Router. Use shadcn/ui with Base UI for components. Use React Aria when the app has major accessibility requirements.
 
 ```sh
-pnpm dlx shadcn@latest init --preset b2BVlrvAA --template vite --pointer
-pnpm dlx shadcn@latest init --preset b2BVlrvAA --base aria --template vite --pointer
+pnpm dlx shadcn@latest init --preset b5defoKzi --template vite
+pnpm dlx shadcn@latest init --preset b5defoKzi --base aria --template vite
 ```
 
 When using TanStack Router, prefer file-based routing. Nest groups with several routes in folders, and add `route.tsx` when the group needs a shared layout, loader, or other parent behavior:
@@ -108,9 +108,7 @@ For the rest, these are the preferences. Add them as you need them:
 - Sonner, Vaul, and cmdk when the component base does not already cover toasts, drawers, or command menus.
 - Jotai when React context isn't satisfactory.
 
-Prefer Hugeicons or Lucide for icons. Use Tailwind CSS with proper design tokens. StyleX is worth considering for a custom design system built on Base UI or React Aria, but its stricter styling model comes at the cost of human developer experience.
-
-When using StyleX, follow the [StyleX setup](frontend-toolchain.md#stylex) for the `sx.ts` namespace helper, optional `WithStyleX<T>` prop, matching `importSources`, and local Vite-plugin type declaration when the installed export is untyped.
+Prefer Hugeicons or Lucide for icons. Use Tailwind CSS with proper design tokens, and let shadcn's lint plugin enforce the design system; see [Tailwind design-system linting](frontend-toolchain.md#tailwind-design-system-linting). Prefer logical properties and utilities over physical ones, as described in the Codestyle section of [Mike's way](../SKILL.md).
 
 Use Fontsource for app fonts. Instrument Sans and Cascadia Code are the current favorites. Other fonts to consider are Inter, Space Mono, JetBrains Mono, Space Grotesk, Manrope, Figtree, DM Mono, Bricolage Grotesque, Mona Sans, Unbounded, Roboto Flex, Google Sans, and Google Sans Flex. Pick something that suits the app. Don't use the same font for everything just because it's on this list.
 

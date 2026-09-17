@@ -12,7 +12,7 @@ When relevant, stress the real interface with dense lists, long and unbroken tex
 
 ## Evolving the design system
 
-Shared components own reusable appearance; callers arrange them within a page. This applies to CSS, Tailwind, StyleX, and native component APIs.
+Shared components own reusable appearance; callers arrange them within a page. This applies to CSS, Tailwind, and native component APIs.
 
 - Reuse named variants and sizes. Put a new reusable treatment in the owning component instead of repeating local overrides. Use semantic tokens.
 - Define caller-controlled styling explicitly through existing props, style APIs, or conventions. A container might accept spacing, a title typography, and an avatar size. Choose each boundary deliberately.
