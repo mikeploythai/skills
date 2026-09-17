@@ -1,47 +1,50 @@
 # Frontend toolchain
 
-Mike's frontend toolchain guidance covers Vite+, lint and format plugins, framework integrations, Tailwind, StyleX, and editor settings. Apply only the parts relevant to the project's stack and installed versions.
+Mike's frontend toolchain guidance covers Vite+, lint and format presets, framework plugins, Tailwind, shadcn/ui, and editor settings. Apply only the parts relevant to the project's stack and installed versions.
 
 For a new frontend, follow the Vite+ scaffolding preference in [stack preferences](stack-preferences.md#toolchain).
 
-## Vite+ lint and format configuration
+## Vite+ configuration
 
-This is Mike's starting linting and formatting configuration for `vite.config.ts`. Keep it when the installed versions support it and the repo has not chosen different rules. Remove framework-specific presets, JS plugins, and overrides when they do not apply. Include `@shadcn/lint` only for compatible Tailwind v4 projects, as described below.
+This is Mike's starting `vite.config.ts` for a React and Tailwind v4 app. Keep it when the installed versions support it and the repo has not chosen different rules. Remove the framework-specific presets, plugins, and comments that do not apply. Ultracite 7.12 or newer ships the `shadcn` preset used below; on older versions, upgrade rather than writing the plugin entry and rules by hand.
 
 ```ts
-import ultracite from "ultracite/oxfmt";
+// TanStack Router projects only.
+import { tanstackRouter } from "@tanstack/router-plugin/vite";
+import tailwindcss from "@tailwindcss/vite";
+import reactVite from "@vitejs/plugin-react";
+import fmt from "ultracite/oxfmt";
 import antiSlop from "ultracite/oxlint/anti-slop";
 import core from "ultracite/oxlint/core";
 import jsPlugins, { jsPluginSettings } from "ultracite/oxlint/js-plugins";
 import reactLint from "ultracite/oxlint/react";
-// TanStack projects only, including the matching presets below.
+import shadcn from "ultracite/oxlint/shadcn";
+// TanStack projects only, including the matching presets and plugin below.
 import tanstack from "ultracite/oxlint/tanstack";
 import tanstackJsPlugins from "ultracite/oxlint/tanstack/js-plugins";
 import vitest from "ultracite/oxlint/vitest";
-import { defineConfig } from "vite-plus";
+import { defineConfig, lazyPlugins } from "vite-plus";
 
+// https://vite.dev/config/
 export default defineConfig({
   fmt: {
-    ...ultracite,
+    ...fmt,
     singleAttributePerLine: true,
   },
   lint: {
     extends: [
       core,
       reactLint,
+      jsPlugins,
+      antiSlop,
+      shadcn,
+      vitest,
       // TanStack projects only.
       tanstack,
-      vitest,
-      jsPlugins,
-      // TanStack projects only.
       tanstackJsPlugins,
-      antiSlop,
     ],
     ignorePatterns: core.ignorePatterns,
     jsPlugins: [
-      ...(jsPlugins.jsPlugins ?? []),
-      // Tailwind v4 projects only.
-      "@shadcn/lint",
       {
         name: "vite-plus",
         specifier: "vite-plus/oxlint-plugin",
@@ -76,30 +79,13 @@ export default defineConfig({
           ],
         },
       },
-      // TanStack Router projects only.
-      {
-        files: ["src/routes/**/*.tsx"],
-        rules: {
-          "github/filenames-match-regex": "off",
-        },
-      },
-      // Tailwind v4 projects only; use the actual design-system source directory.
-      {
-        files: ["src/components/ui/**"],
-        rules: {
-          "shadcn/no-arbitrary-values": "off",
-          "shadcn/no-restyle": "off",
-          "shadcn/require-static-classes": "off",
-        },
-      },
     ],
     rules: {
       "eslint-js/no-restricted-syntax": [
         "error",
         {
           message: "Reserve export {} for multiple exports.",
-          selector:
-            "ExportNamedDeclaration[source=null][specifiers.length=1]",
+          selector: "ExportNamedDeclaration[source=null][specifiers.length=1]",
         },
         {
           message: "Use React.* for React types instead of named type imports.",
@@ -107,6 +93,7 @@ export default defineConfig({
             "ImportDeclaration[source.value='react'][importKind='type'] > ImportSpecifier, ImportDeclaration[source.value='react'] > ImportSpecifier[importKind='type']",
         },
       ],
+      // Remove unused imports on save.
       "no-unused-vars": [
         "error",
         {
@@ -116,23 +103,9 @@ export default defineConfig({
           },
         },
       ],
-      // These five rules apply only with the Tailwind v4 @shadcn/lint plugin.
-      "shadcn/no-arbitrary-values": [
-        "error",
-        {
-          allow: ["layout"],
-        },
-      ],
-      "shadcn/no-raw-colors": "error",
-      "shadcn/no-restyle": [
-        "error",
-        {
-          allow: ["layout"],
-        },
-      ],
-      "shadcn/no-unknown-classes": "error",
-      "shadcn/require-static-classes": "error",
+      // Reduce max cognitive complexity (Ultracite defaults to 20 to match Biome).
       "sonarjs/cognitive-complexity": ["error", 13],
+      // Spacing rules for code legibility
       "stylistic/jsx-newline": [
         "error",
         {
@@ -182,113 +155,86 @@ export default defineConfig({
     },
     settings: jsPluginSettings,
   },
+  plugins: lazyPlugins(() => [
+    // TanStack Router projects only.
+    tanstackRouter({ autoCodeSplitting: true, target: "react" }),
+    reactVite({ compiler: true }),
+    tailwindcss(),
+  ]),
+  resolve: {
+    tsconfigPaths: true,
+  },
+  // Omit in projects committed from Visual Studio; see below.
+  staged: {
+    "*": "vp check --fix",
+  },
 });
 ```
 
-## Lint plugin dependencies
+The restricted-imports pattern allows `./` and `../` imports. Imports starting with `../../` must use `@/*`, or the project's equivalent source alias. Keep the TanStack imports, their `lint.extends` entries, and the router plugin only in TanStack projects. The `tanstack` and `js-plugins` presets already relax the filename-case rules inside `routes/` directories, so TanStack Router's file-based routes need no extra override.
 
-Install the plugins referenced by the selected Ultracite JS-plugin presets as direct dev dependencies in the package that owns `vite.config.ts`. Oxlint resolves their specifiers from the project, so extending the presets alone is not enough. For the base `js-plugins` preset used above:
+`staged` runs `vp check --fix` on staged files through Vite+'s pre-commit hook; run `vp hooks status` to confirm the hook is installed. Do not add a separate lint-staged setup beside it. Omit `staged` in projects that also contain a .NET solution, or any project Mike commits from Visual Studio. Visual Studio doesn't surface a failing client-side lint hook clearly, so a lint error looks like a broken commit. Run `vp check` in CI or on demand for those projects instead.
 
-```sh
-vp add -D eslint-plugin-github eslint-plugin-sonarjs oxlint-plugin-react-doctor
-```
+### Path aliases
 
-The example's additional `stylistic` and `eslint-js` entries also require `@stylistic/eslint-plugin` and `oxlint-plugin-eslint` as direct dev dependencies. Keep `jsPluginSettings` on the root `lint.settings`, as shown above. Install any additional plugins required by the selected TanStack preset only when the project uses TanStack. Check the installed preset's plugin specifiers and supported versions, then run the project's lint command to verify they load. See [Ultracite's releases](https://github.com/haydenbleasel/ultracite/releases).
+Enable `resolve.tsconfigPaths` and let Vite read the `paths` from `tsconfig.json`. Do not add a manual `resolve.alias` entry for `@/*` or duplicate the alias in a second place; `tsconfig.json` is the only place aliases are declared. Keep `resolve.alias` for cases tsconfig cannot express, such as remapping a dependency.
 
-The restricted-imports pattern allows `./` and `../` imports. Imports starting with `../../` must use `@/*`, or the project's equivalent source alias. Keep both TanStack imports, their `lint.extends` entries, and the route filename override only in TanStack projects. The filename override specifically applies to TanStack Router's file-based routes.
+### Oxc React Compiler
 
-## Tailwind design-system linting
-
-For Tailwind v4 projects, add [shadcn's lint plugin](https://github.com/shadcn-ui/lint) to the package that owns the lint configuration:
+Mike uses the Rust-based React Compiler through `@vitejs/plugin-react`, not the Babel plugin. Install `oxc-transform-react` as a dev dependency in the app package and pass `compiler: true` to the React plugin, as shown above:
 
 ```sh
-vp add -D @shadcn/lint
+vp add -D oxc-transform-react
 ```
 
-Keep the `"@shadcn/lint"` entry in `lint.jsPlugins` in `vite.config.ts`, alongside the existing plugins. It works with custom Tailwind components and themes; shadcn/ui is not required. Omit the dependency and entry for projects without Tailwind v4.
+Remove `babel-plugin-react-compiler`, `@babel/*` packages, Babel plugin options on the React plugin, and Babel configuration files that existed only for the replaced compiler. Do not leave the Babel compiler active alongside Oxc. Preserve Babel configuration that another build path still needs. Verify the installed React plugin supports the `compiler` option and run the build. See the [Oxc React Compiler guide](https://oxc.rs/docs/guide/usage/transformer/react-compiler).
 
-Check that Node.js is at least 20.19 and Vite+'s bundled Oxlint is at least 1.80. Use the project's existing lint command, such as `vp lint` or `vp check`, to verify the plugin loads. Keep Vite+'s lint configuration in `vite.config.ts`; do not add a parallel `.oxlintrc.json` just for this plugin.
+### Tailwind
 
-Registration alone enables no rules. The five rules above are Mike's preferred baseline for Tailwind v4 projects. Preserve other existing rule policies. Use the project's accepted design system to configure discovery and exceptions.
-
-| Rule | Policy and scope |
-| --- | --- |
-| [no-restyle](https://github.com/shadcn-ui/lint/blob/main/docs/rules/no-restyle.md) | Error with `allow: ["layout"]`. Callers can set margin, width, positioning, transforms, and text alignment on recognized components. Padding, gap, color, typography, and shape changes need component variants or an accepted component contract. |
-| [no-raw-colors](https://github.com/shadcn-ui/lint/blob/main/docs/rules/no-raw-colors.md) | Error. Use declared theme colors rather than raw palette classes or undeclared tokens. Also checks literal intrinsic SVG color attributes. Keep enabled inside design-system sources. `white`, `black`, `transparent`, `current`, and `inherit` pass. Arbitrary color values belong to no-arbitrary-values. |
-| [no-arbitrary-values](https://github.com/shadcn-ui/lint/blob/main/docs/rules/no-arbitrary-values.md) | Error with `allow: ["layout"]`, following upstream's appearance-focused setup. `w-[320px]` passes; `p-[13px]`, `rounded-[10px]`, and `bg-[#333]` need tokens, scale values, or narrow exceptions. Arbitrary variants and CSS-variable shorthands are not arbitrary values. |
-| [no-unknown-classes](https://github.com/shadcn-ui/lint/blob/main/docs/rules/no-unknown-classes.md) | Error. Checks whether the installed Tailwind v4 can generate a class using the project's theme, utilities, variants, and plugins. Keep enabled inside design-system sources. Add exact exceptions for external classes the app actually loads; an allowance does not generate CSS. |
-| [require-static-classes](https://github.com/shadcn-ui/lint/blob/main/docs/rules/require-static-classes.md) | Error on recognized components and forwarding wrappers. Use complete literal classes, conditional choices, and readable class-helper arguments. Imported class values, unknown function results, and interpolated names such as `bg-${color}` cannot be checked. Plain elements are outside this rule. |
-
-Disable `no-restyle`, `no-arbitrary-values`, and `require-static-classes` inside the design-system source directory so components can define internals and call their own variant functions. Keep `no-raw-colors` and `no-unknown-classes` enabled there. Adjust `src/components/ui/**` in the override above to the actual source directory. Omit all five rules and this override when the Tailwind v4 plugin does not apply.
-
-Same-file constants can be read one hop deep. Wrappers may forward their received `className`; their authored defaults still get checked. Register custom class helpers only when their arguments describe their output. Do not assume that require-static-classes proves every class in the application is static.
-
-Recognition and theme discovery are part of enforcement. Use `components.json` when present; verify the component aliases and theme CSS path it names. For a custom design system, set `settings.shadcn.ui` or `componentImports` for the actual component imports. Merge these settings without losing `jsPluginSettings`. Without `components.json`, verify the discovered stylesheet imports Tailwind and includes the project's tokens through its import graph. Scope component recognition per app in a workspace and preserve each app's theme discovery. Fix theme-loading warnings before treating a clean result as full coverage; no-unknown-classes falls back to a less precise grammar when Tailwind or the theme cannot load. See [settings](https://github.com/shadcn-ui/lint#settings) and [discovery and analysis limits](https://github.com/shadcn-ui/lint/blob/main/docs/how-it-works.md).
-
-Exceptions apply to each rule independently. Allowing a color or arbitrary value does not make it acceptable to `no-restyle`. Component `contracts` match resolved names; a contract inherits omitted top-level keys, and only the last matching contract applies. `require-static-classes` has no `allow`, `deny`, or `contracts`. Avoid `deny` alone unless the intention is to allow every other match. Keep exceptions narrow and supported by styles the app actually loads. Review suggested color replacements against the design; proximity in light-mode color values does not establish the right semantic token.
-
-Add other `shadcn/*` rules when relevant. See the upstream [setup guide](https://github.com/shadcn-ui/lint/blob/main/SETUP.md), [rules](https://github.com/shadcn-ui/lint/blob/main/docs/rules.md), and [design-system configuration](https://github.com/shadcn-ui/lint/blob/main/docs/design-systems.md).
-
-## Framework plugins and editor settings
-
-For a React, TanStack Router, and Tailwind app, add the current project plugins for TanStack Router with automatic code splitting, React with the Oxc React Compiler integration, and Tailwind. Enable TypeScript path resolution. Confirm the exact plugin APIs against the installed versions.
-
-When setting up Tailwind's Vite integration, Mike prefers `@tailwindcss/vite` as a dev dependency in the app package:
+Use `@tailwindcss/vite` as a dev dependency in the app package rather than the PostCSS plugin:
 
 ```sh
 vp add -D @tailwindcss/vite
 ```
 
-### Oxc React Compiler
+## Lint plugin dependencies
 
-When using the Oxc React Compiler integration, install `oxc-transform-react` as a dev dependency in the app package. Remove Babel imports, plugin options, configuration files, and direct dependencies used solely by the replaced React Compiler setup. Do not leave that Babel compiler active alongside Oxc. Preserve Babel configuration needed by another build path; StyleX's unplugin may also require Babel internally. Verify the installed React plugin's Oxc compiler option and run the build. See the [Oxc React Compiler guide](https://oxc.rs/docs/guide/usage/transformer/react-compiler).
+Install the plugins referenced by the selected Ultracite presets as direct dev dependencies in the package that owns `vite.config.ts`. Oxlint resolves their specifiers from the project, so extending the presets alone is not enough. For the configuration above:
 
-### StyleX
-
-When using StyleX, use `@stylexjs/stylex` as the runtime package and `@stylexjs/unplugin` as the Vite-plugin dev dependency. Create `src/lib/sx.ts`, or use the project's equivalent shared-library path:
-
-```ts
-import type { StyleXStyles } from "@stylexjs/stylex";
-
-// oxlint-disable-next-line sonarjs/no-wildcard-import, sx intentionally exports the StyleX namespace
-export * as sx from "@stylexjs/stylex";
-
-export type WithStyleX<T> = T & {
-  stylex?: StyleXStyles;
-};
+```sh
+vp add -D @shadcn/lint @stylistic/eslint-plugin eslint-plugin-github eslint-plugin-sonarjs oxlint-plugin-eslint oxlint-plugin-react-doctor
 ```
 
-Use `import { sx } from "@/lib/sx"` and `WithStyleX<Props>` when a component accepts an optional StyleX override. This namespace helper is an intentional exception to the general preference against barrels.
+The `js-plugins` preset needs `eslint-plugin-github`, `eslint-plugin-sonarjs`, and `oxlint-plugin-react-doctor`. The `shadcn` preset needs `@shadcn/lint`. The `stylistic` and `eslint-js` entries need `@stylistic/eslint-plugin` and `oxlint-plugin-eslint`. The `anti-slop` preset bundles its own plugin. Keep `jsPluginSettings` on the root `lint.settings`; Oxlint does not merge settings from extended configs. Oxlint loads the preset plugins through `extends`, but dependency analyzers such as Knip only read the root `jsPlugins`. If the project runs Knip, spread `jsPlugins.jsPlugins` and `shadcn.jsPlugins` into the root array so those packages aren't reported as unused. Install any plugins required by the TanStack presets only when the project uses TanStack. Check the installed preset's plugin specifiers and supported versions, then run the project's lint command to verify they load. See [Ultracite's releases](https://github.com/haydenbleasel/ultracite/releases).
 
-Configure the StyleX Vite plugin's `importSources` to match the helper's exact import specifier:
+## Tailwind design-system linting
 
-```ts
-import stylex from "@stylexjs/unplugin/vite";
+For Tailwind v4 projects, extend `ultracite/oxlint/shadcn` as shown above. It registers [shadcn's lint plugin](https://github.com/shadcn-ui/lint), which works with custom Tailwind components and themes; shadcn/ui is not required. Omit the preset and the `@shadcn/lint` dependency for projects without Tailwind v4.
 
-// Merge into the existing Vite plugins array.
-stylex({
-  importSources: [{ as: "sx", from: "@/lib/sx" }],
-});
-```
+Check that Node.js is at least 20.19 and Vite+'s bundled Oxlint is at least 1.80. Use the project's existing lint command, such as `vp lint` or `vp check`, to verify the plugin loads. Keep Vite+'s lint configuration in `vite.config.ts`; do not add a parallel `.oxlintrc.json` just for this plugin.
 
-Replace `@/lib/sx` with the project's actual helper path in both the imports and `importSources`. Preserve entries needed by any existing direct StyleX imports.
+The preset enables these rules at `error`. Keep them; adjust policy through narrow exceptions rather than turning rules off.
 
-When the installed plugin declares its Vite export as `any`, add a local `stylex-unplugin.d.ts` included by the tsconfig that checks `vite.config.ts`:
+| Rule | Policy and scope |
+| --- | --- |
+| [no-restyle](https://github.com/shadcn-ui/lint/blob/main/docs/rules/no-restyle.md) | `allow: ["layout"]`. Callers can set margin, size, flex, positioning, transforms, and text alignment on recognized components. Padding, gap, color, typography, and shape changes need component variants or an accepted component contract. |
+| [no-raw-colors](https://github.com/shadcn-ui/lint/blob/main/docs/rules/no-raw-colors.md) | Use declared theme colors rather than raw palette classes or undeclared tokens. Also checks literal intrinsic SVG color attributes. Stays on inside design-system sources. `white`, `black`, `transparent`, `current`, and `inherit` pass. Arbitrary color values belong to no-arbitrary-values. |
+| [no-arbitrary-values](https://github.com/shadcn-ui/lint/blob/main/docs/rules/no-arbitrary-values.md) | `allow: ["layout"]`. `inline-[320px]` passes; `p-[13px]`, `rounded-[10px]`, and `bg-[#333]` need tokens, scale values, or narrow exceptions. Arbitrary variants and CSS-variable shorthands are not arbitrary values. |
+| [no-inline-styles](https://github.com/shadcn-ui/lint/blob/main/docs/rules/no-inline-styles.md) | No `style` props on recognized components. Use classes and variants; pass dynamic values through CSS variables the component exposes. Stays on inside design-system sources. |
+| [no-unknown-classes](https://github.com/shadcn-ui/lint/blob/main/docs/rules/no-unknown-classes.md) | Checks whether the installed Tailwind v4 can generate a class using the project's theme, utilities, variants, and plugins. Stays on inside design-system sources. Add exact exceptions for external classes the app actually loads; an allowance does not generate CSS. |
+| [require-static-classes](https://github.com/shadcn-ui/lint/blob/main/docs/rules/require-static-classes.md) | Applies to recognized components and forwarding wrappers. Use complete literal classes, conditional choices, and readable class-helper arguments. Imported class values, unknown function results, and interpolated names such as `bg-${color}` cannot be checked. Plain elements are outside this rule. |
 
-```ts
-declare module "@stylexjs/unplugin/vite" {
-  import type { UserOptions } from "@stylexjs/unplugin";
-  import type { Plugin } from "vite-plus";
+The preset already disables `no-restyle`, `no-arbitrary-values`, and `require-static-classes` inside `**/components/ui/**` so components can define internals and call their own variant functions. For a design-system directory elsewhere, add an override with the same shape for the actual path. Same-file constants can be read one hop deep. Wrappers may forward their received `className`; their authored defaults still get checked. Register custom class helpers only when their arguments describe their output. Do not assume that require-static-classes proves every class in the application is static.
 
-  const stylex: (options?: Partial<UserOptions>) => Plugin;
+Recognition and theme discovery are part of enforcement. Use `components.json` when present; verify the component aliases and theme CSS path it names. Without it, the plugin looks for `components/ui` or `src/components/ui` beside the nearest `package.json`. For a custom design system, set `settings.shadcn.ui` or `componentImports` on the root `lint.settings`, merged with `jsPluginSettings`. Verify the discovered stylesheet imports Tailwind and includes the project's tokens through its import graph. Scope component recognition per app in a workspace and preserve each app's theme discovery. Fix theme-loading warnings before treating a clean result as full coverage; no-unknown-classes falls back to a less precise grammar when Tailwind or the theme cannot load. See [settings](https://github.com/shadcn-ui/lint#settings) and [discovery and analysis limits](https://github.com/shadcn-ui/lint/blob/main/docs/how-it-works.md).
 
-  export default stylex;
-}
-```
+Exceptions apply to each rule independently. Allowing a color or arbitrary value does not make it acceptable to `no-restyle`. Component `contracts` match resolved names; a contract inherits omitted top-level keys, and only the last matching contract applies. `require-static-classes` has no `allow`, `deny`, or `contracts`. Avoid `deny` alone unless the intention is to allow every other match. Keep exceptions narrow and supported by styles the app actually loads. Review suggested color replacements against the design; proximity in light-mode color values does not establish the right semantic token.
 
-Keep this declaration file free of top-level imports or exports so it declares the module rather than trying to augment an untyped export. Check the installed package's options type and Vite compatibility, then verify both type checking and a build that compiles an `sx.create` call imported through the helper. See the [StyleX unplugin](https://stylexjs.com/docs/api/configuration/unplugin/) and [importSources configuration](https://stylexjs.com/docs/api/configuration/babel-plugin/#importsources).
+See the upstream [setup guide](https://github.com/shadcn-ui/lint/blob/main/SETUP.md), [rules](https://github.com/shadcn-ui/lint/blob/main/docs/rules.md), and [design-system configuration](https://github.com/shadcn-ui/lint/blob/main/docs/design-systems.md).
 
-### TanStack Router editor settings
+## Editor settings
+
+### TanStack Router
 
 When TanStack Router is present, merge these into the project's `.vscode/settings.json` without replacing unrelated settings:
 

@@ -31,6 +31,9 @@ If the hashes differ, ask the user whether they want to update. Only after they 
 8. Build in narrow, complete slices before moving onto the next. Only parallelize work that is genuinely independent, leveraging branches and/or worktrees. Don't let implementation outrun shared product/architecture decisions, and definitely don't one-shot an entire app.
    - Agree on the approach and first meaningful slice with the user before open-ended implementation. Use their feedback to shape subsequent slices, and keep subagent assignments within the agreed slice unless the user asks you to proceed further.
 9. Commit work on the user's behalf. Before creating commits or drafting PR titles, read and follow the [conventional commits guidance](references/conventional-commits.md), including Mike's preference for scopes only when useful. Use commits as save states, preferring one coherent commit per slice. This helps the user and/or other agents keep track of what's been done, and makes rolling back changes, if needed, granular enough so it won't impact other work. Do not push or deploy work without the user's consent.
+   - A commit is a complete, verified unit of work, not a finished file. Commit when the slice's changes belong together, the required checks pass, and the result would make sense to revert as one. Don't commit a single file as soon as it's done while related changes for the same slice are still in progress; batch them into that slice's commit. Don't split one slice into several commits just because the work happened in stages.
+   - Keep each commit to one concern. Unrelated fixes, refactors, and formatting-only changes found along the way go in their own commits, or wait until the slice's commit is done. Never mix them into the slice's commit.
+   - Coordinate commits in a shared working tree. When several agents work in the same checkout, the orchestrator decides when and what to commit. Subagents leave their work uncommitted unless they were told to commit, and always stage specific paths rather than `git add -A` or `git commit -a`, so another agent's in-progress changes aren't included. Check `git status` and the staged diff before every commit.
    - If you run into any issues that are worth tracking, open up an issue on the user's behalf.
    - If the user authorizes you to push, open up a PR on the user's behalf.
      - Prefer multiple small PRs as opposed to one big PR; GitHub's stacked PRs feature is helpful for these.
@@ -79,63 +82,70 @@ When choosing or materially changing libraries, frameworks, infrastructure, or f
 
 These conventions apply to source code and machine-readable configuration in code projects. They do not govern prose, documentation, product copy, or messages to the user. Use sentence case, proper capitalization for names and acronyms, and normal punctuation for those. Keep each prose paragraph on one source line and separate paragraphs with a blank line. Let the editor or renderer wrap text; do not apply code line-length targets to prose. Prose inside configuration strings follows the same writing conventions.
 
-Follow these conventions, adapted from Mike's Oxc + Ultracite config, where the repo doesn't already have its own. Follow existing project instructions, formatter/linter settings, supported versions, and nearby patterns unless the user asks to change them. Apply framework-specific conventions only where relevant. Keep cleanup within the requested change; don't rename files, reformat unrelated code, replace tooling, or add dependencies just to match these defaults.
+Follow these conventions, derived from Mike's Vite+ config in [frontend toolchain](references/frontend-toolchain.md), where the repo doesn't already have its own. They describe what Oxfmt and Oxlint will enforce, so write code this way the first time instead of waiting for the linter to reject it. Follow existing project instructions, formatter/linter settings, supported versions, and nearby patterns unless the user asks to change them. Apply framework-specific conventions only where relevant. Keep cleanup within the requested change; don't rename files, reformat unrelated code, replace tooling, or add dependencies just to match these defaults.
 
 ### Formatting
 
-- Two spaces, LF, semicolons, double quotes, 80-column target, spaced object braces, and property quotes only when needed. Always parenthesize arrow parameters; use expression bodies for simple returns.
+- Two spaces, LF, semicolons, double quotes in code and JSX, 80-column target, spaced object braces, and property quotes only when needed. Always parenthesize arrow parameters; use expression bodies for simple returns.
 - Use ES5 trailing commas: multiline objects, arrays, imports, and exports; never function parameters or arguments.
-- Put multiple markup attributes on separate lines, with multiline opening tags' closing brackets on their own lines. Self-close empty elements; omit blank lines between JSX siblings.
-- Separate top-level statements except grouped imports. Inside blocks, surround multiline declarations, expressions, and block-like statements with blank lines; keep consecutive single-line `const`/`let` declarations together.
-- Sort Tailwind classes canonically, including inside classname helper functions like `cn`, `clsx`, and `cva`. Use conventional `package.json` ordering.
+- One JSX attribute per line, with a multiline opening tag's closing bracket on its own line. Self-close empty elements. No blank lines between single-line JSX siblings; a blank line is allowed around a multiline sibling.
+- Separate every top-level statement with a blank line, except consecutive imports. Inside blocks, surround multiline declarations, expressions, and block-like statements with blank lines; keep consecutive single-line `const`/`let` declarations together with no blank line.
+- Sort Tailwind classes canonically, including inside `cn`, `clsx`, `cva`, `tv`, `tw`, `twJoin`, and `twMerge`. Use conventional `package.json` key ordering.
 
 ### Modules and declarations
 
-- Imports first, alphabetically sorted ignoring case, with blank lines between groups. Consolidate duplicates; use separate top-level `import type` declarations.
+- Imports first, alphabetically sorted ignoring case, with a blank line between groups. Use `node:` protocol for Node built-ins. Consolidate duplicate imports; use separate top-level `import type` declarations rather than inline `type` specifiers.
 - If `@types/react` is installed as a dev dependency, prefer `React.*` types instead of named type imports; always import runtime React APIs by name.
-- Use `@/*` or the project's equivalent source alias for imports outside the parent folder; `./` and `../` are allowed. Import owning modules directly; avoid general-purpose barrels, cycles, and mutable exports.
-- Export single local declarations directly; reserve local `export { ... }` lists for multiple exports. Default exports are allowed where appropriate.
-- Prefer `const`; use `let` only for reassignment, never `var`. One binding per declaration. Prefer arrow function expressions over declarations; define ordinary helpers before use.
-- Use kebab-case filenames and alphabetical object keys, except framework-required filenames and ordering that affects behavior or inference, including TanStack route options.
+- Use `@/*` or the project's equivalent source alias for imports outside the parent folder; `./` and `../` are allowed, `../../` is not. Aliases come from `tsconfig.json` paths resolved through `resolve.tsconfigPaths`, never a manual Vite alias. Import owning modules directly; avoid general-purpose barrels, cycles, and mutable exports.
+- Export single local declarations directly; reserve local `export { ... }` lists for multiple exports. Default exports are allowed where appropriate, but never anonymous. Import from `vite-plus` instead of `vite` or `vitest` when Vite+ is present.
+- Prefer `const`; use `let` only for reassignment, never `var`. One binding per declaration. Prefer arrow function expressions over declarations; define ordinary helpers before use, and hoist helpers that don't capture anything to module scope.
+- Use kebab-case filenames and alphabetical object keys, except framework-required filenames and ordering that affects behavior or inference, including TanStack route options. Name the catch binding `error`.
+- Use `T[]` for arrays, `interface` for object types and `type` for unions and other aliases, and `Set`/`Map` lookups over repeated array searches.
 
 ### Types and boundaries
 
-- Preserve precise inference; avoid redundant annotations, aliases, generics, and widening followed by assertions. Prefer schemas, narrowing, and `satisfies` over casts.
-- No explicit `any`, non-null assertions, or chained/double casts. Every necessary assertion except `as const` requires a nearby `SAFETY` comment explaining its evidence; comments do not make unsafe casts acceptable.
+- Preserve precise inference; avoid redundant annotations, aliases, generics, and widening followed by assertions. Prefer schemas, narrowing, and `satisfies` over casts. Strict boolean expressions: no truthiness checks on nullable strings or numbers; compare explicitly. Nullable objects may be tested directly.
+- No explicit `any`, non-null assertions, `@ts-ignore`, or chained/double casts. Every necessary assertion except `as const` requires a nearby `SAFETY` comment explaining its evidence; comments do not make unsafe casts acceptable.
 - Parse external data at I/O boundaries; pass concrete domain types through application code. No ordinary contracts using `unknown`, `Promise<unknown>`, or broad `object` parameters. Concrete object parameters and destructured props are allowed.
 - Keep `unknown` explicit at validation/error boundaries; type-predicate subjects and error `cause` parameters may accept it. Never hide it behind aliases.
 - Dictionary values must have concrete domain/schema-derived types, never `any`, `unknown`, `object`, or `{}`.
 - Prefer validated domain values and discriminants in application code. Inline `typeof` checks are fine for simple narrowing. Use a named type predicate when it's reused or its name makes the validation rule clearer.
-- Name symbols for their domain role; avoid `shape` in names. Use typed property access and direct calls, never `Reflect.get` or `Reflect.apply`.
+- Exhaustive `switch` on unions, with braces around each case body. Name symbols for their domain role; avoid `shape` in names. Use typed property access and direct calls, never `Reflect.get` or `Reflect.apply`.
 
 ### Control flow and data
 
-- Always brace control-flow bodies. Prefer early returns and shallow branching; no nested ternaries or redundant `else` after return. Follow the configured cognitive-complexity limit; use 13 by default when setting up that rule. Without a checker, simplify functions that are hard to follow. Don't guess scores or split functions just to chase a number.
-- Use strict equality, appropriate optional chaining/nullish coalescing, and explicit nullable-boolean handling. Prefer destructuring, shorthand properties, spread, and template literals.
-- Use `for...of` for side effects/accumulation and focused array methods for transformations/queries; avoid `forEach` and `reduce`. Prefer `toSorted`/`toReversed`; avoid spreading growing accumulators.
-- Never reassign parameters or use `++`/`--`. Avoid conditional object spreads with `{}` fallbacks; construct optional properties explicitly.
-- Remove unused code, redundant wrappers, and empty production functions. Put comments on their own lines; omit commented-out code and placeholder TODO comments.
+- Always brace control-flow bodies. Prefer early returns and shallow branching; no nested ternaries, negated conditions with an `else`, or redundant `else` after return. Follow the configured cognitive-complexity limit; use 13 by default when setting up that rule. Without a checker, simplify functions that are hard to follow. Don't guess scores or split functions just to chase a number.
+- Use strict equality, optional chaining, nullish coalescing over `||` for defaults, and explicit nullable-boolean handling. Prefer destructuring, shorthand properties, spread, template literals, and `.at(-1)` over length arithmetic.
+- Use `for...of` for side effects/accumulation and focused array methods for transformations/queries; avoid `forEach` and `reduce`. Prefer `toSorted`/`toReversed` over mutating `sort`/`reverse`; avoid spreading growing accumulators.
+- Never reassign parameters or use `++`/`--`. Avoid conditional object spreads with `{}` fallbacks; construct optional properties explicitly. Use numeric separators in long literals.
+- Remove unused code, redundant wrappers, and empty production functions. Put comments on their own lines; omit commented-out code and placeholder TODO comments. Lift a string literal repeated three or more times into a named constant; test files are exempt.
 
 ### Async and errors
 
-- Prefer `async`/`await`; avoid `.then()` chains, callback-based promise handling, and unnecessary `async`. Use `return await` when returning promises from async functions.
-- Await or return promises; explicitly mark intentional fire-and-forget work and handle errors. Run independent operations concurrently with appropriate promise combinators; avoid unnecessary sequential or loop awaits.
-- Throw meaningful `Error` instances and preserve causes when wrapping errors. No empty catches or catch-and-rethrow wrappers.
+- Prefer `async`/`await`; avoid `.then()` chains, callback-based promise handling, and unnecessary `async`. Functions returning promises are `async`. Use `return await` when returning promises from async functions.
+- Await or return promises; explicitly mark intentional fire-and-forget work with `void` and handle errors. Run independent operations concurrently with appropriate promise combinators; no `await` inside loops.
+- Throw `Error` instances with meaningful messages and preserve causes when wrapping errors. No empty catches, catch-and-rethrow wrappers, or ignored exceptions.
 
 ### React
 
-- Use module-level arrow components rendered through JSX. Keep rendering pure, state immutable, hooks unconditional, and dependencies complete.
-- Derive values during rendering; handle user actions in handlers. Reserve effects for external synchronization, with cleanup where needed. Avoid effect-based fetching, derived/mirrored state, effect chains, and action callbacks triggered through effects.
-- Hoist independent static values and pure helpers. With React Compiler, avoid unnecessary `memo`/`useMemo`/`useCallback`. Target React 19+ APIs when applicable, including refs as props.
-- Use stable domain keys, never indexes or random values.
-- Use semantic HTML, explicit button types, labels, accessible names, keyboard support, and visible focus. No nested interactive elements or raw HTML injection.
+- Use module-level arrow components rendered through JSX. Keep rendering pure, state immutable, hooks unconditional, and dependencies complete. Name handlers `handleX` and handler props `onX`.
+- Derive values during rendering; handle user actions in handlers. Reserve effects for external synchronization, with cleanup where needed. Avoid effect-based fetching, derived/mirrored state, effect chains, `setState` in effects, and action callbacks triggered through effects.
+- Hoist independent static values and pure helpers to module scope. The Oxc React Compiler handles memoization, so no `memo`, `useMemo`, or `useCallback`. Target React 19+ APIs, including refs as props; no `forwardRef`, `React.Children`, or `cloneElement`.
+- Use stable domain keys, never indexes or random values. Use the `<>` fragment shorthand and drop useless fragments. Use `type="button"` on non-submit buttons.
+- Use semantic HTML, labels, accessible names, keyboard support, and visible focus; never `outline-none` without a replacement focus style. No nested interactive elements, raw HTML injection, `<dialog>` substitutes without accessible names, or `style` props on shared components.
+
+### Styling
+
+- Style with Tailwind v4 and shadcn/ui components. Shared components own appearance through variants; pages arrange them with layout classes only. Follow the design-system rules in [frontend toolchain](references/frontend-toolchain.md#tailwind-design-system-linting): no raw palette colors, no arbitrary appearance values, no restyling a component's padding, color, typography, or shape from a caller, and only classes the theme can generate.
+- Prefer logical properties and utilities over physical ones. In CSS, write `inline-size`, `block-size`, `margin-inline`, `padding-block`, `inset-inline-start`, `border-start-start-radius`, and `text-align: start`. In Tailwind, use `inline-*`, `block-*`, `min-inline-*`, `max-block-*`, `ms-*`, `me-*`, `ps-*`, `pe-*`, `start-*`, `end-*`, `border-s-*`, `rounded-s-*`, and `text-start` instead of `w-*`, `h-*`, `ml-*`, `pr-*`, `left-*`, `border-l-*`, `rounded-l-*`, and `text-left`. Use `size-*` when both dimensions match. Physical properties are only for things that are physically directional, such as shadows or a component that must not flip in right-to-left layouts.
+- Animate transforms and opacity, not layout properties. Name the transitioned properties instead of `transition-all`. Keep durations short and respect reduced-motion preferences.
 
 ### TanStack and testing
 
 - Query: queries read, mutations write; keep clients stable, destructure only needed result fields, return query data, and invalidate affected queries after mutations.
 - TanStack Router/Start: use framework navigation/loading APIs, preserve inference-sensitive option ordering, parallelize independent loader work, validate server inputs, and exclude secrets from client-visible loader data.
-- Import Vitest APIs explicitly. Use deterministic, descriptively named tests, specific matchers, `toStrictEqual` for structural equality, and parameterized cases for repetition. Await async assertions.
-- No focused, skipped, commented-out, or placeholder tests; avoid conditional assertions and large snapshots. No module mocking; use injected dependencies, focused fakes, or narrow spies.
+- Import Vitest APIs explicitly. Use deterministic, descriptively named tests inside a top-level `describe`, specific matchers, `toStrictEqual` for structural equality, `toHaveLength`, `toHaveBeenCalledOnce` for single calls and `toHaveBeenCalledTimes` otherwise, and parameterized `it.each` for repetition. Await async assertions and `expect.poll`. Give `toThrow` a message.
+- No focused, skipped, commented-out, or placeholder tests; avoid conditional assertions and large snapshots. No module mocking; use injected dependencies, focused fakes, or narrow `vi.spyOn`.
 - Temporary checks stay temporary. Before staging, inspect git status and the diff; remove only the one-off tests, fixtures, screenshots, stress pages, scripts, and debug data created solely for the task unless the user asked to keep them. Keep a test when it protects a real regression, and never delete pre-existing user files as cleanup.
 
-Run the project's required checks and available formatting, lint, type checks, and relevant tests before finishing. Without equivalent tooling, review the applicable conventions manually. Fix code rather than weaken checks.
+Run the project's required checks and available formatting, lint, type checks, and relevant tests before finishing. With Vite+, that is `vp check`. Without equivalent tooling, review the applicable conventions manually. Fix code rather than weaken checks.
