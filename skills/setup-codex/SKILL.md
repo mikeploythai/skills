@@ -22,6 +22,7 @@ If the hashes differ, ask the user whether they want to update. Only after they 
 - Reviewer: `gpt-6-sol` at `high`, read-only.
 - Up to four concurrent subagent threads.
 - Route interface work to `frontend_engineer`, backend and non-interface implementation to `engineer`, read-only investigation to `researcher`, and independent QA to `reviewer`.
+- Finish research before implementation and stop implementation before review. Run multiple agents within a role when their tasks are independent. Default to backend before dependent frontend work; run both in parallel only after their shared contracts are settled and the remaining work is independent.
 - On-request approvals, workspace-write sandboxing, live web search, concise reasoning summaries, low verbosity, pragmatic personality, and experimental context management.
 - Global `AGENTS.md` instructions for Mike's way and CodeGraph.
 
@@ -99,6 +100,10 @@ Use $mikes-way by default for software development work. Its engineering-manager
 When the custom Codex agents are available, use `frontend_engineer` for interface design and implementation, `engineer` for backend and non-interface implementation, `researcher` for read-only investigation, and `reviewer` for independent QA.
 
 For interface tasks, the primary agent owns scope and product constraints. The `frontend_engineer` owns visual and interaction decisions and verifies the result in the real interface.
+
+Work in phases. Finish research before starting implementation. Stop implementation before starting review. Do not run `researcher` or `reviewer` threads at the same time as `engineer` or `frontend_engineer` threads.
+
+Within a phase, run multiple agents of the same role in parallel when the tasks are independent. Start backend work before dependent frontend work. Run backend and frontend work in parallel only after their shared contracts are settled and the remaining work is independent.
 <!-- MIKES_WAY_END -->
 
 <!-- CODEGRAPH_START -->
