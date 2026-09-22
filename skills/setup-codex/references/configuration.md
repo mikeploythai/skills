@@ -10,7 +10,7 @@ Merge into `<codex-home>/config.toml`:
 
 ```toml
 # Orchestrator
-model = "gpt-5.6-sol"
+model = "gpt-6-sol"
 model_reasoning_effort = "xhigh"
 
 # Defaults
@@ -26,7 +26,7 @@ network_access = true
 
 [agents]
 enabled = true
-default_subagent_model = "gpt-5.6-luna"
+default_subagent_model = "gpt-6-luna"
 default_subagent_reasoning_effort = "max"
 max_concurrent_threads_per_session = 4
 
@@ -36,6 +36,8 @@ experimental_mode = true
 
 Experimental context management requires ChatGPT sign-in on Plus, Pro, or Pro Lite.
 
+GPT-6 Sol trades a lower API price and stronger FrontierCode results for a lower reported DeepSWE v1.1 score than GPT-5.6 Sol at `max` effort (68.8% versus 73%). The setup uses `xhigh`, so compare both models on your own work if coding accuracy matters more than price. See the [GPT-6 launch results](https://openai.com/index/introducing-gpt-6-sol-and-luna/) and [DeepSWE leaderboard](https://deepswe.datacurve.ai/).
+
 ## Researcher
 
 Install as `<codex-home>/agents/researcher.toml`:
@@ -44,7 +46,7 @@ Install as `<codex-home>/agents/researcher.toml`:
 name = "researcher"
 description = "Investigates code, technical options, and general questions; returns evidence and a recommendation."
 
-model = "gpt-5.6-luna"
+model = "gpt-6-luna"
 model_reasoning_effort = "max"
 
 sandbox_mode = "read-only"
@@ -72,7 +74,7 @@ Install as `<codex-home>/agents/reviewer.toml`:
 name = "reviewer"
 description = "Independently reviews changes and tests whether the assigned user path works."
 
-model = "gpt-5.6-sol"
+model = "gpt-6-sol"
 model_reasoning_effort = "xhigh"
 
 sandbox_mode = "read-only"
@@ -102,7 +104,7 @@ Install as `<codex-home>/agents/engineer.toml`:
 name = "engineer"
 description = "Implements a bounded slice, verifies it, and resolves review findings."
 
-model = "gpt-5.6-luna"
+model = "gpt-6-luna"
 model_reasoning_effort = "max"
 
 sandbox_mode = "workspace-write"

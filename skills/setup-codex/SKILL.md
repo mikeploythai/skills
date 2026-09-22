@@ -15,10 +15,10 @@ If the hashes differ, ask the user whether they want to update. Only after they 
 
 ## Setup
 
-- Orchestrator: `gpt-5.6-sol` at `xhigh`.
-- Researcher: `gpt-5.6-luna` at `max`, read-only.
-- Engineer: `gpt-5.6-luna` at `max`, workspace-write.
-- Reviewer: `gpt-5.6-sol` at `xhigh`, read-only.
+- Orchestrator: `gpt-6-sol` at `xhigh`.
+- Researcher: `gpt-6-luna` at `max`, read-only.
+- Engineer: `gpt-6-luna` at `max`, workspace-write.
+- Reviewer: `gpt-6-sol` at `xhigh`, read-only.
 - Up to four concurrent agent threads.
 - On-request approvals, workspace-write sandboxing, live web search, concise reasoning summaries, low verbosity, pragmatic personality, and experimental context management.
 - Global `AGENTS.md` instructions for Mike's way and CodeGraph.
