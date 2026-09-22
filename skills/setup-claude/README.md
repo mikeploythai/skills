@@ -33,7 +33,7 @@ The skill preserves unrelated configuration and only changes global Claude Code 
 | `model` | `claude-fable-5-1` |
 | `effortLevel` | `medium` |
 | `showThinkingSummaries` | `true` |
-| `permissions.defaultMode` | `ask` |
+| `permissions.defaultMode` | `default` |
 | `sandbox.enabled` | `true` |
 | `sandbox.autoAllowBashIfSandboxed` | `true` |
 

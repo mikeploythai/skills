@@ -14,7 +14,7 @@ Merge into `<claude-home>/settings.json`:
   "effortLevel": "medium",
   "showThinkingSummaries": true,
   "permissions": {
-    "defaultMode": "ask"
+    "defaultMode": "default"
   },
   "sandbox": {
     "enabled": true,
