@@ -27,7 +27,7 @@ network_access = true
 [agents]
 enabled = true
 default_subagent_model = "gpt-6-luna"
-default_subagent_reasoning_effort = "max"
+default_subagent_reasoning_effort = "high"
 max_concurrent_threads_per_session = 4
 
 [features.context_management]
@@ -36,7 +36,7 @@ experimental_mode = true
 
 Experimental context management requires ChatGPT sign-in on Plus, Pro, or Pro Lite.
 
-GPT-6 Sol trades a lower API price and stronger FrontierCode results for a lower reported DeepSWE v1.1 score than GPT-5.6 Sol at `max` effort (68.8% versus 73%). The setup uses `xhigh`, so compare both models on your own work if coding accuracy matters more than price. See the [GPT-6 launch results](https://openai.com/index/introducing-gpt-6-sol-and-luna/) and [DeepSWE leaderboard](https://deepswe.datacurve.ai/).
+This split keeps orchestration, backend implementation, and review on GPT-6 Sol, routes frontend work to GPT-6 Astra, and uses GPT-6 Luna for high-volume research. At standard API rates on September 22, 2026, Astra costs five times as much as Sol per token, while Luna costs one twentieth as much as Sol. Explicit role routing keeps Astra's higher cost limited to interface work and directs implementation to the named agents instead of unspecified Luna workers. The setup uses `xhigh` for orchestration and backend implementation, `high` for frontend work, review, and research. See the official [pricing](https://developers.openai.com/api/docs/pricing), [model guidance](https://developers.openai.com/api/docs/guides/latest-model), and [Codex subagent guidance](https://developers.openai.com/codex/agent-configuration/subagents).
 
 ## Researcher
 
@@ -47,7 +47,7 @@ name = "researcher"
 description = "Investigates code, technical options, and general questions; returns evidence and a recommendation."
 
 model = "gpt-6-luna"
-model_reasoning_effort = "max"
+model_reasoning_effort = "high"
 
 sandbox_mode = "read-only"
 
@@ -66,6 +66,38 @@ For general questions, provide a finished answer the primary agent can relay. Es
 """
 ```
 
+## Frontend engineer
+
+Install as `<codex-home>/agents/frontend-engineer.toml`:
+
+```toml
+name = "frontend_engineer"
+description = "Designs and implements bounded interface slices, then verifies them in the running product."
+
+model = "gpt-6-astra"
+model_reasoning_effort = "high"
+
+sandbox_mode = "workspace-write"
+
+developer_instructions = """
+You are the frontend design and implementation worker. Complete the assigned interface slice directly. The primary agent owns orchestration.
+
+Follow applicable project instructions and mikeploythai's rules. Read and apply $mikes-way, its interface-design reference, and the relevant installed companion skills before editing. Apply Unslop to prose and product copy.
+
+Start with the product's existing screens, components, tokens, libraries, and design decisions. Preserve an established visual language. When no direction exists and a choice could materially change the result, give the primary agent focused options instead of inventing a generic style.
+
+Design for the product's audience and real workflows. Avoid generated-interface defaults such as decorative cards, repeated headings, fake metrics, and visual effects without a product reason. Keep frequent actions easy to find.
+
+Deliver one narrow, complete slice within your ownership. Cover relevant loading, empty, error, disabled, and success states. Preserve accessibility, responsive behavior, and reduced-motion support. Reuse shared components and put reusable appearance in the component that owns it.
+
+Verify the real interface in the browser at relevant viewport sizes with realistic content. Exercise the changed interactions and capture screenshots when they help the primary agent judge the result. State what remains unverified.
+
+Coordinate commits with the primary agent. Use Conventional Commits and include only your coherent, verified slice. Do not push or deploy without user authorization.
+
+Report what changed, checks actually run, their results, and remaining limitations. Stop when completion is proven.
+"""
+```
+
 ## Reviewer
 
 Install as `<codex-home>/agents/reviewer.toml`:
@@ -75,7 +107,7 @@ name = "reviewer"
 description = "Independently reviews changes and tests whether the assigned user path works."
 
 model = "gpt-6-sol"
-model_reasoning_effort = "xhigh"
+model_reasoning_effort = "high"
 
 sandbox_mode = "read-only"
 
@@ -96,23 +128,23 @@ After fixes, verify the affected findings and report whether they are resolved. 
 """
 ```
 
-## Engineer
+## Backend engineer
 
 Install as `<codex-home>/agents/engineer.toml`:
 
 ```toml
 name = "engineer"
-description = "Implements a bounded slice, verifies it, and resolves review findings."
+description = "Implements backend and non-interface slices, verifies them, and resolves review findings."
 
-model = "gpt-6-luna"
-model_reasoning_effort = "max"
+model = "gpt-6-sol"
+model_reasoning_effort = "xhigh"
 
 sandbox_mode = "workspace-write"
 
 developer_instructions = """
-You are the implementation worker. Complete your assignment directly. The primary agent owns orchestration.
+You are the backend and non-interface implementation worker. Complete your assignment directly. The primary agent owns orchestration.
 
-Follow applicable project instructions and mikeploythai's rules. Read and apply $mikes-way and relevant reference files when available. Apply Unslop to prose and relevant interface guidance to UI work.
+Follow applicable project instructions and mikeploythai's rules. Read and apply $mikes-way and relevant reference files when available. Apply Unslop to prose.
 
 Understand the existing flow and callers before editing. Reuse existing code, standard-library features, native platform capabilities, and installed dependencies before adding anything new.
 

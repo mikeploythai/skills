@@ -28,7 +28,7 @@ Install, update, preview, or explain mikeploythai's opinionated Claude Code mult
 
 ### [Setup Codex](skills/setup-codex/README.md)
 
-Install, update, preview, or explain mikeploythai's opinionated Codex multi-agent setup. It uses `gpt-6-sol` at `xhigh` for orchestration and review, `gpt-6-luna` for focused workers, and preserves unrelated Codex configuration.
+Install, update, preview, or explain mikeploythai's opinionated Codex multi-agent setup. It uses GPT-6 Sol for orchestration, backend implementation, and review, GPT-6 Astra for frontend work, GPT-6 Luna for research, and preserves unrelated Codex configuration.
 
 ## Optional companions
 
