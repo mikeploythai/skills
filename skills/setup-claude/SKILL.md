@@ -20,6 +20,7 @@ If the hashes differ, ask the user whether they want to update. Only after they 
 - Engineer: Sonnet 5 at `xhigh`, edits accepted inside the workspace.
 - Reviewer: Fable 5.1 at `high`, no file edits.
 - Prompted approvals, Bash sandboxing where the platform supports it, and visible thinking summaries.
+- Global `CLAUDE.md` instructions for Mike's way and CodeGraph.
 
 Claude Code has no session cap on concurrent subagents and no global default subagent model. Parallelism comes from batching agent calls in a single turn, and each agent file carries its own model and effort. Web search, web fetch, and context compaction are built in and need no configuration.
 
@@ -51,6 +52,7 @@ Inspect these before making changes:
 - `agents/researcher.md`
 - `agents/engineer.md`
 - `agents/reviewer.md`
+- `CLAUDE.md`
 
 Preserve unrelated settings, hooks, permission rules, environment variables, status lines, MCP servers, plugins, skills, and agent files. Never replace the entire `settings.json` with the reference example.
 
@@ -75,27 +77,35 @@ Merge only the settings owned by this setup:
 
 Install the three agent definitions from the configuration reference. Create missing directories as needed.
 
-Write complete files through temporary files and replace their targets only after the resulting JSON or YAML frontmatter parses successfully.
+Write complete JSON and agent files through temporary files and replace their targets only after the resulting JSON or YAML frontmatter parses successfully.
 
-## Automatically use Mike's way
+Update `<claude-home>/CLAUDE.md` with both blocks in [Global instructions](#global-instructions).
 
-After setup, explain that the user can optionally make `/mikes-way` the default for software development work. Setup alone does not enable this. If they ask to "automate Mike's way" or otherwise enable that default, add the following block to `<claude-home>/CLAUDE.md`:
+## Global instructions
+
+On install or update, add these blocks to `<claude-home>/CLAUDE.md`:
 
 ```markdown
 <!-- MIKES_WAY_START -->
 ## Mike's way
 
-Use /mikes-way by default for software development work. Its engineering-manager role applies to the primary agent; subagents execute their assigned roles directly.
+Use $mikes-way by default for software development work. Its engineering-manager role applies to the primary agent; subagents execute their assigned roles directly.
 <!-- MIKES_WAY_END -->
+
+<!-- CODEGRAPH_START -->
+## CodeGraph
+
+Prefer CodeGraph for symbol and call-path navigation when the repository has a usable `.codegraph/` index. Use `codegraph_explore` with the project path, or `codegraph explore "<symbol names or question>"` when the CLI is available.
+
+For substantive repository work, initialize a missing index with `codegraph init -i` when useful and available. Skip initialization for small edits and non-coding tasks. If the tool or index is unavailable, stale, or unsuccessful, continue with `rg` and direct reads; do not block the task on indexing.
+<!-- CODEGRAPH_END -->
 ```
 
-Confirm that `mikes-way` is installed before reporting it as enabled. If it is missing, explain that it needs to be installed first.
+Confirm that `mikes-way` is installed before reporting its default as active. If it is missing, explain that it needs to be installed. CodeGraph is optional; its block includes a fallback.
 
-Read the existing global instructions and preserve everything outside this marked block. Create `CLAUDE.md` if it is missing. Leave an identical block alone and update an existing marked block instead of adding a duplicate. Use the backup procedure above before changing an existing file. If the block has conflicting custom instructions, show the conflict before replacing them.
+Preserve everything outside the two marked blocks. Create `CLAUDE.md` if it is missing. Leave identical blocks alone and update earlier setup versions instead of adding duplicates. Use the backup procedure above before changing an existing file, and write the updated file through a temporary file. If a marked block contains conflicting custom instructions or its markers are incomplete or duplicated, show the conflict and ask how to handle it; continue with non-conflicting setup changes.
 
 Project and directory `CLAUDE.md` files load alongside this one rather than replacing it, so a project file can override the default in that repository. Point that out instead of claiming the default always wins. See [Claude Code's memory docs](https://code.claude.com/docs/en/memory).
-
-After an opted-in update, read the file back and verify that the exact block appears once and unrelated instructions are unchanged. This option changes global instructions only; it does not rerun the rest of setup.
 
 ## Verify
 
@@ -104,7 +114,8 @@ After applying the setup:
 1. Parse every changed JSON file and every agent file's YAML frontmatter.
 2. Confirm each owned setting has exactly one effective definition and the expected value.
 3. Confirm all three agent files exist with their intended model, effort, tool limits, and instructions.
-4. Report the files changed, files created, backups written, and conflicts left unresolved.
-5. Tell the user that settings and agent files are read when a session starts, so they should start a new Claude Code session for the setup to take effect. If automatic Mike's way is not already enabled, also tell them: "You can start a new session now, or ask me to automate Mike's way for all engineering tasks first, then start a new session." If it is already enabled, confirm that and give the restart instruction.
+4. Read `CLAUDE.md` back and confirm that each applied block appears exactly once and unrelated instructions are unchanged.
+5. Report the files changed, files created, backups written, and conflicts left unresolved, including a missing `mikes-way` skill.
+6. Tell the user to start a new Claude Code session for the setup to take effect.
 
 If validation fails, restore the affected file from its backup and report the failure.

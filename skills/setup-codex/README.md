@@ -4,7 +4,7 @@ Install, update, preview, or explain mikeploythai's opinionated Codex multi-agen
 
 See [SKILL.md](SKILL.md) for the installation workflow and [configuration](references/configuration.md) for the settings and agent definitions.
 
-This setup pairs with [Mike's way](../mikes-way/README.md), which supplies the primary agent's engineering-manager rules.
+The setup adds Mike's way and CodeGraph guidance to the global `AGENTS.md`. Install [Mike's way](../mikes-way/README.md) for its default instruction to work. CodeGraph is optional.
 
 ## Installation
 
