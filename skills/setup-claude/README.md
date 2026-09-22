@@ -4,7 +4,7 @@ Install, update, preview, or explain mikeploythai's opinionated Claude Code mult
 
 See [SKILL.md](SKILL.md) for the installation workflow and [configuration](references/configuration.md) for the settings and subagent definitions.
 
-This setup pairs with [Mike's way](../mikes-way/README.md), which supplies the primary agent's engineering-manager rules. It is the Claude Code counterpart to [Setup Codex](../setup-codex/README.md).
+The setup adds Mike's way and CodeGraph guidance to the global `CLAUDE.md`. Install [Mike's way](../mikes-way/README.md) for its default instruction to work. CodeGraph is optional. This is the Claude Code counterpart to [Setup Codex](../setup-codex/README.md).
 
 ## Installation
 
