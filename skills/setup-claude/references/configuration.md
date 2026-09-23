@@ -10,7 +10,7 @@ Merge into `<claude-home>/settings.json`:
 
 ```json
 {
-  "model": "claude-fable-5-1",
+  "model": "claude-opus-5-5",
   "effortLevel": "medium",
   "showThinkingSummaries": true,
   "permissions": {
@@ -29,7 +29,7 @@ Bash sandboxing uses operating system isolation, which is not available everywhe
 
 Install these as Markdown files in `<claude-home>/agents/`. The YAML frontmatter configures the agent and the body is its system prompt.
 
-`model` accepts `opus`, `sonnet`, `haiku`, `fable`, a full model ID, or `inherit`. `effort` accepts `low`, `medium`, `high`, `xhigh`, or `max`.
+`model` accepts `opus`, `sonnet`, `haiku`, `fable`, a full model ID, or `inherit`. The Opus 5.5 agents use the full ID so they don't depend on which model the `opus` alias points to. `effort` accepts `low`, `medium`, `high`, `xhigh`, or `max`.
 
 `disallowedTools` keeps the research and review agents out of implementation files. It does not stop a shell command from writing, so the instructions state the boundary as well.
 
@@ -41,15 +41,15 @@ At standard API rates on September 23, 2026, Fable 5.1 costs $10 per million inp
 
 | Role | Model | Effort | Why |
 | --- | --- | --- | --- |
-| Orchestrator | `claude-fable-5-1` | `medium` | Delegates, reads reports, and decides. Low output volume against a long cached prefix, where Fable's $0.25 per million cache reads land well. Lower effort on Fable often beats a higher setting on an older model, so `medium` is the price-to-performance point for routine turns. |
-| Reviewer | `fable` | `high` | Catching a real defect is worth the most per token, and review output is findings rather than files. Effort earns its cost here. |
-| Frontend engineer | `claude-opus-5-5` | `high` | Opus 5.5 is strongest at interface work. It follows specific design constraints and reads screenshots precisely, which matters when it verifies its own UI. At less than half of Fable's rate, explicit routing keeps its higher cost limited to interface slices. Opus 5.5 at `medium` already beats Opus 5 at `high` on coding, so `high` leaves room for browser verification without paying for `xhigh`. |
-| Researcher | `sonnet` | `high` | Reads a lot and writes a little. Input-heavy work is the wrong place to pay Fable rates. |
-| Backend engineer | `sonnet` | `xhigh` | Produces the most output tokens of any role, so the five-times output multiplier would land hardest here. `xhigh` is the documented sweet spot for coding and agentic work. |
+| Orchestrator | `claude-opus-5-5` | `medium` | Delegates, reads reports, and decides. It runs the longest session, so its rate applies to every turn. Opus 5.5 at `medium` beats Opus 5 at `high` in Anthropic's coding and knowledge-work evaluations, which covers routine orchestration at two fifths of Fable's price. Switch to Fable with `/model` for a hard problem. |
+| Reviewer | `fable` | `high` | Catching a real defect is worth the most per token, and review output is findings rather than files. This is the one role where Fable's price pays for itself. |
+| Frontend engineer | `claude-opus-5-5` | `high` | Opus 5.5 is strongest at interface work. It follows specific design constraints and reads screenshots precisely, which matters when it verifies its own UI. Opus 5.5 at `medium` already beats Opus 5 at `high` on coding, so `high` leaves room for browser verification without paying for `xhigh`. |
+| Backend engineer | `claude-opus-5-5` | `high` | Cost per completed task matters more than cost per token. A stronger engineer means fewer review and rework rounds, and each round costs a reviewer pass and an engineer pass. Matching the frontend engineer keeps both implementation roles at the same level. |
+| Researcher | `sonnet` | `high` | Reads a lot and writes a little. It finds and reports rather than decides, so input-heavy work is the wrong place to pay Opus or Fable rates. |
 
 Raise a single turn instead of the defaults: `/effort` changes effort mid-session, and `/model` switches the orchestrator for hard problems. That beats paying `max` on every routine turn.
 
-Fable 5.1 requires 30-day data retention. An organization on zero data retention cannot use it without express authorization from Anthropic, so an install there should put the orchestrator and reviewer on `claude-opus-5-5` at `high`. Confirm that the organization can use Opus 5.5 under its retention settings before installing.
+Fable 5.1 requires 30-day data retention. An organization on zero data retention cannot use it without express authorization from Anthropic, so an install there should put the reviewer on `claude-opus-5-5` at `high`. Confirm that the organization can use Opus 5.5 under its retention settings before installing.
 
 ## Researcher
 
@@ -146,8 +146,8 @@ Install as `<claude-home>/agents/engineer.md`:
 ---
 name: engineer
 description: Implements backend and non-interface slices, verifies them, and resolves review findings.
-model: sonnet
-effort: xhigh
+model: claude-opus-5-5
+effort: high
 permissionMode: acceptEdits
 color: green
 ---

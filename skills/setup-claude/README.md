@@ -30,15 +30,15 @@ The skill preserves unrelated configuration and only changes global Claude Code 
 
 | Setting | Value |
 | --- | --- |
-| `model` | `claude-fable-5-1` |
+| `model` | `claude-opus-5-5` |
 | `effortLevel` | `medium` |
 | `showThinkingSummaries` | `true` |
 | `permissions.defaultMode` | `default` |
 | `sandbox.enabled` | `true` |
 | `sandbox.autoAllowBashIfSandboxed` | `true` |
 
-Plus four subagents in `<claude-home>/agents/`: a read-only `researcher` at `high` and a workspace-writing backend `engineer` at `xhigh`, both on Sonnet 5, a workspace-writing `frontend-engineer` on Opus 5.5 at `high`, and a read-only `reviewer` on Fable 5.1 at `high`. The global `CLAUDE.md` block routes work to those roles and runs research, implementation, and review as separate phases.
+Plus four subagents in `<claude-home>/agents/`: a read-only `researcher` on Sonnet 5 at `high`, workspace-writing `frontend-engineer` and backend `engineer` agents on Opus 5.5 at `high`, and a read-only `reviewer` on Fable 5.1 at `high`. The global `CLAUDE.md` block routes work to those roles and runs research, implementation, and review as separate phases.
 
-Fable 5.1 takes the orchestrator and reviewer seats, where judgment pays and output volume is low. Opus 5.5 takes interface work, where it is strongest, at less than half of Fable's price. Sonnet 5 takes the researcher and backend engineer seats, which read and write the most tokens. Fable 5.1 also requires 30-day data retention; the [configuration reference](references/configuration.md) names the Opus 5.5 substitution for organizations that cannot meet that.
+Opus 5.5 takes the orchestrator and both engineer seats at two fifths of Fable's price. Fable 5.1 takes only the reviewer seat, where catching a real defect is worth the most and output is short. Sonnet 5 takes the researcher seat, which reads the most tokens and makes the fewest decisions. Fable 5.1 also requires 30-day data retention; the [configuration reference](references/configuration.md) names the Opus 5.5 reviewer substitution for organizations that cannot meet that.
 
 Some Codex settings have no counterpart here. Claude Code has no session cap on concurrent subagents and no global default subagent model, and web search, web fetch, and context compaction are built in.
