@@ -15,16 +15,19 @@ If the hashes differ, ask the user whether they want to update. Only after they 
 
 ## Setup
 
-- Orchestrator: Fable 5.1 at `medium`.
+- Orchestrator: Opus 5.5 at `medium`.
 - Researcher: Sonnet 5 at `high`, no file edits.
-- Engineer: Sonnet 5 at `xhigh`, edits accepted inside the workspace.
+- Frontend engineer: Opus 5.5 at `high`, edits accepted inside the workspace.
+- Backend engineer: Opus 5.5 at `high`, edits accepted inside the workspace.
 - Reviewer: Fable 5.1 at `high`, no file edits.
+- Route interface work to `frontend-engineer`, backend and non-interface implementation to `engineer`, read-only investigation to `researcher`, and independent QA to `reviewer`.
+- Finish research before implementation and stop implementation before review. Run multiple agents within a role when their tasks are independent. Default to backend before dependent frontend work; run both in parallel only after their shared contracts are settled and the remaining work is independent.
 - Prompted approvals, Bash sandboxing where the platform supports it, and visible thinking summaries.
 - Global `CLAUDE.md` instructions for Mike's way and CodeGraph.
 
 Claude Code has no session cap on concurrent subagents and no global default subagent model. Parallelism comes from batching agent calls in a single turn, and each agent file carries its own model and effort. Web search, web fetch, and context compaction are built in and need no configuration.
 
-Fable 5.1 runs the two judgment roles and Sonnet 5 runs the two token-heavy ones, because Fable costs five times Sonnet per output token. The configuration reference explains the per-role reasoning and names the cheaper substitution for an organization on zero data retention, which cannot use Fable 5.1 without express authorization from Anthropic. Check that before installing, and report it during a preview.
+Opus 5.5 runs orchestration and both implementation roles, Fable 5.1 runs review, and Sonnet 5 runs research. Per output token, Fable costs two and a half times Opus 5.5 and five times Sonnet 5. The configuration reference explains the per-role reasoning and names the reviewer substitution for an organization on zero data retention, which cannot use Fable 5.1 without express authorization from Anthropic. Check that before installing, and report it during a preview.
 
 Read [the configuration reference](references/configuration.md) for the exact settings and agent definitions before previewing or applying them.
 
@@ -50,6 +53,7 @@ Inspect these before making changes:
 
 - `settings.json`
 - `agents/researcher.md`
+- `agents/frontend-engineer.md`
 - `agents/engineer.md`
 - `agents/reviewer.md`
 - `CLAUDE.md`
@@ -75,7 +79,7 @@ Merge only the settings owned by this setup:
 - `sandbox.enabled`
 - `sandbox.autoAllowBashIfSandboxed`
 
-Install the three agent definitions from the configuration reference. Create missing directories as needed.
+Install the four agent definitions from the configuration reference. Create missing directories as needed.
 
 Write complete JSON and agent files through temporary files and replace their targets only after the resulting JSON or YAML frontmatter parses successfully.
 
@@ -90,6 +94,14 @@ On install or update, add these blocks to `<claude-home>/CLAUDE.md`:
 ## Mike's way
 
 Use $mikes-way by default for software development work. Its engineering-manager role applies to the primary agent; subagents execute their assigned roles directly.
+
+When the custom Claude Code subagents are available, use `frontend-engineer` for interface design and implementation, `engineer` for backend and non-interface implementation, `researcher` for read-only investigation, and `reviewer` for independent QA.
+
+For interface tasks, the primary agent owns scope and product constraints. The `frontend-engineer` owns visual and interaction decisions and verifies the result in the real interface.
+
+Work in phases. Finish research before starting implementation. Stop implementation before starting review. Do not run `researcher` or `reviewer` agents at the same time as `engineer` or `frontend-engineer` agents.
+
+Within a phase, run multiple agents of the same role in parallel when the tasks are independent. Start backend work before dependent frontend work. Run backend and frontend work in parallel only after their shared contracts are settled and the remaining work is independent.
 <!-- MIKES_WAY_END -->
 
 <!-- CODEGRAPH_START -->
@@ -113,7 +125,7 @@ After applying the setup:
 
 1. Parse every changed JSON file and every agent file's YAML frontmatter.
 2. Confirm each owned setting has exactly one effective definition and the expected value.
-3. Confirm all three agent files exist with their intended model, effort, tool limits, and instructions.
+3. Confirm all four agent files exist with their intended model, effort, tool limits, and instructions.
 4. Read `CLAUDE.md` back and confirm that each applied block appears exactly once and unrelated instructions are unchanged.
 5. Report the files changed, files created, backups written, and conflicts left unresolved, including a missing `mikes-way` skill.
 6. Tell the user to start a new Claude Code session for the setup to take effect.

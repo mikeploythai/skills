@@ -24,7 +24,7 @@ My rules and preferences for how agents work: delegate, reuse what's already the
 
 ### [Setup Claude](skills/setup-claude/README.md)
 
-Install, update, preview, or explain mikeploythai's opinionated Claude Code multi-agent setup. It uses Fable 5.1 for orchestration and review, Sonnet 5 for focused workers, and preserves unrelated Claude Code configuration.
+Install, update, preview, or explain mikeploythai's opinionated Claude Code multi-agent setup. It uses Opus 5.5 for orchestration and implementation, Fable 5.1 for review, Sonnet 5 for research, and preserves unrelated Claude Code configuration.
 
 ### [Setup Codex](skills/setup-codex/README.md)
 

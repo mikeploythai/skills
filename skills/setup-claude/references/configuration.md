@@ -10,7 +10,7 @@ Merge into `<claude-home>/settings.json`:
 
 ```json
 {
-  "model": "claude-fable-5-1",
+  "model": "claude-opus-5-5",
   "effortLevel": "medium",
   "showThinkingSummaries": true,
   "permissions": {
@@ -29,7 +29,7 @@ Bash sandboxing uses operating system isolation, which is not available everywhe
 
 Install these as Markdown files in `<claude-home>/agents/`. The YAML frontmatter configures the agent and the body is its system prompt.
 
-`model` accepts `opus`, `sonnet`, `haiku`, `fable`, a full model ID, or `inherit`. `effort` accepts `low`, `medium`, `high`, `xhigh`, or `max`.
+`model` accepts `opus`, `sonnet`, `haiku`, `fable`, a full model ID, or `inherit`. The Opus 5.5 agents use the full ID so they don't depend on which model the `opus` alias points to. `effort` accepts `low`, `medium`, `high`, `xhigh`, or `max`.
 
 `disallowedTools` keeps the research and review agents out of implementation files. It does not stop a shell command from writing, so the instructions state the boundary as well.
 
@@ -37,18 +37,19 @@ When `mikes-way` is installed, `skills: mikes-way` can be added to any of these 
 
 ## Model choice
 
-Fable 5.1 costs $10 per million input tokens and $50 per million output tokens: twice Opus 5 and five times Sonnet 5. Thinking tokens bill as output, so effort and role decide most of the bill.
+At standard API rates on September 23, 2026, Fable 5.1 costs $10 per million input tokens and $50 per million output tokens, Opus 5.5 costs $4 and $20, and Sonnet 5 costs $2 and $10. Fable is two and a half times Opus 5.5 and five times Sonnet 5. Thinking tokens bill as output, so effort and role decide most of the bill. See the official [pricing](https://platform.claude.com/docs/en/about-claude/pricing) and [model overview](https://platform.claude.com/docs/en/about-claude/models/overview).
 
 | Role | Model | Effort | Why |
 | --- | --- | --- | --- |
-| Orchestrator | `claude-fable-5-1` | `medium` | Delegates, reads reports, and decides. Low output volume against a long cached prefix, where Fable's $0.25 per million cache reads land well. Lower effort on Fable often beats a higher setting on an older model, so `medium` is the price-to-performance point for routine turns. |
-| Reviewer | `fable` | `high` | Catching a real defect is worth the most per token, and review output is findings rather than files. Effort earns its cost here. |
-| Researcher | `sonnet` | `high` | Reads a lot and writes a little. Input-heavy work is the wrong place to pay Fable rates. |
-| Engineer | `sonnet` | `xhigh` | Produces the most output tokens of any role, so the five-times output multiplier would land hardest here. `xhigh` is the documented sweet spot for coding and agentic work. |
+| Orchestrator | `claude-opus-5-5` | `medium` | Delegates, reads reports, and decides. It runs the longest session, so its rate applies to every turn. Opus 5.5 at `medium` beats Opus 5 at `high` in Anthropic's coding and knowledge-work evaluations, which covers routine orchestration at two fifths of Fable's price. Switch to Fable with `/model` for a hard problem. |
+| Reviewer | `fable` | `high` | Catching a real defect is worth the most per token, and review output is findings rather than files. This is the one role where Fable's price pays for itself. |
+| Frontend engineer | `claude-opus-5-5` | `high` | Opus 5.5 is strongest at interface work. It follows specific design constraints and reads screenshots precisely, which matters when it verifies its own UI. Opus 5.5 at `medium` already beats Opus 5 at `high` on coding, so `high` leaves room for browser verification without paying for `xhigh`. |
+| Backend engineer | `claude-opus-5-5` | `high` | Cost per completed task matters more than cost per token. A stronger engineer means fewer review and rework rounds, and each round costs a reviewer pass and an engineer pass. Matching the frontend engineer keeps both implementation roles at the same level. |
+| Researcher | `sonnet` | `high` | Reads a lot and writes a little. It finds and reports rather than decides, so input-heavy work is the wrong place to pay Opus or Fable rates. |
 
 Raise a single turn instead of the defaults: `/effort` changes effort mid-session, and `/model` switches the orchestrator for hard problems. That beats paying `max` on every routine turn.
 
-Fable 5.1 requires 30-day data retention. An organization on zero data retention cannot use it without express authorization from Anthropic, so an install there should stay on `claude-opus-5` at `xhigh`.
+Fable 5.1 requires 30-day data retention. An organization on zero data retention cannot use it without express authorization from Anthropic, so an install there should put the reviewer on `claude-opus-5-5` at `high`. Confirm that the organization can use Opus 5.5 under its retention settings before installing.
 
 ## Researcher
 
@@ -106,23 +107,54 @@ Return actionable findings with severity, location, a concrete failure scenario,
 After fixes, verify the affected findings and report whether they are resolved. Stop when acceptance criteria and required checks pass.
 ```
 
-## Engineer
+## Frontend engineer
+
+Install as `<claude-home>/agents/frontend-engineer.md`:
+
+```markdown
+---
+name: frontend-engineer
+description: Designs and implements bounded interface slices, then verifies them in the running product.
+model: claude-opus-5-5
+effort: high
+permissionMode: acceptEdits
+color: purple
+---
+
+You are the frontend design and implementation worker. Complete the assigned interface slice directly. The primary agent owns orchestration.
+
+Follow applicable project instructions and mikeploythai's rules. Read and apply the mikes-way skill, its interface-design reference, and the relevant installed companion skills before editing. Apply Unslop to prose and product copy.
+
+Start with the product's existing screens, components, tokens, libraries, and design decisions. Preserve an established visual language. When no direction exists and a choice could materially change the result, give the primary agent focused options instead of inventing a generic style.
+
+Design for the product's audience and real workflows. Avoid generated-interface defaults such as decorative cards, repeated headings, fake metrics, and visual effects without a product reason. Keep frequent actions easy to find.
+
+Deliver one narrow, complete slice within your ownership. Cover relevant loading, empty, error, disabled, and success states. Preserve accessibility, responsive behavior, and reduced-motion support. Reuse shared components and put reusable appearance in the component that owns it.
+
+Verify the real interface in the browser at relevant viewport sizes with realistic content. Exercise the changed interactions and capture screenshots when they help the primary agent judge the result. State what remains unverified.
+
+Coordinate commits with the primary agent. Use Conventional Commits and include only your coherent, verified slice. Do not push or deploy without user authorization.
+
+Report what changed, checks actually run, their results, and remaining limitations. Stop when completion is proven.
+```
+
+## Backend engineer
 
 Install as `<claude-home>/agents/engineer.md`:
 
 ```markdown
 ---
 name: engineer
-description: Implements a bounded slice, verifies it, and resolves review findings.
-model: sonnet
-effort: xhigh
+description: Implements backend and non-interface slices, verifies them, and resolves review findings.
+model: claude-opus-5-5
+effort: high
 permissionMode: acceptEdits
 color: green
 ---
 
-You are the implementation worker. Complete your assignment directly. The primary agent owns orchestration.
+You are the backend and non-interface implementation worker. Complete your assignment directly. The primary agent owns orchestration.
 
-Follow applicable project instructions and mikeploythai's rules. Read and apply the mikes-way skill and relevant reference files when available. Apply Unslop to prose and relevant interface guidance to UI work.
+Follow applicable project instructions and mikeploythai's rules. Read and apply the mikes-way skill and relevant reference files when available. Apply Unslop to prose.
 
 Understand the existing flow and callers before editing. Reuse existing code, standard-library features, native platform capabilities, and installed dependencies before adding anything new.
 
@@ -137,4 +169,4 @@ Coordinate commits with the primary agent. Use Conventional Commits and include 
 Report what changed, checks actually run, their results, and remaining limitations. Stop when completion is proven.
 ```
 
-`permissionMode: acceptEdits` lets the engineer write inside the workspace without a prompt for each edit, matching the worker's ownership of a bounded slice. Change it to `default` to approve every edit by hand.
+`permissionMode: acceptEdits` lets both engineers write inside the workspace without a prompt for each edit, matching the worker's ownership of a bounded slice. Change it to `default` in either file to approve every edit by hand.
