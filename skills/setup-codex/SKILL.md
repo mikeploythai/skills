@@ -16,10 +16,13 @@ If the hashes differ, ask the user whether they want to update. Only after they 
 ## Setup
 
 - Orchestrator: `gpt-6-sol` at `xhigh`.
-- Researcher: `gpt-6-luna` at `max`, read-only.
-- Engineer: `gpt-6-luna` at `max`, workspace-write.
-- Reviewer: `gpt-6-sol` at `xhigh`, read-only.
-- Up to four concurrent agent threads.
+- Researcher: `gpt-6-luna` at `high`, read-only.
+- Frontend engineer: `gpt-6-astra` at `high`, workspace-write.
+- Backend engineer: `gpt-6-sol` at `xhigh`, workspace-write.
+- Reviewer: `gpt-6-sol` at `high`, read-only.
+- Up to four concurrent subagent threads.
+- Route interface work to `frontend_engineer`, backend and non-interface implementation to `engineer`, read-only investigation to `researcher`, and independent QA to `reviewer`.
+- Finish research before implementation and stop implementation before review. Run multiple agents within a role when their tasks are independent. Default to backend before dependent frontend work; run both in parallel only after their shared contracts are settled and the remaining work is independent.
 - On-request approvals, workspace-write sandboxing, live web search, concise reasoning summaries, low verbosity, pragmatic personality, and experimental context management.
 - Global `AGENTS.md` instructions for Mike's way and CodeGraph.
 
@@ -43,6 +46,7 @@ Inspect these before making changes:
 
 - `config.toml`
 - `agents/researcher.toml`
+- `agents/frontend-engineer.toml`
 - `agents/engineer.toml`
 - `agents/reviewer.toml`
 - `AGENTS.md`
@@ -77,7 +81,7 @@ Merge only the settings owned by this setup:
 - `personality`
 - `features.context_management.experimental_mode`
 
-Install the three agent definitions from the configuration reference. Create missing directories as needed.
+Install the four agent definitions from the configuration reference. Create missing directories as needed.
 
 Write complete TOML files through temporary files and replace their targets only after the resulting TOML parses successfully.
 
@@ -92,6 +96,14 @@ On install or update, add these blocks to `<codex-home>/AGENTS.md`:
 ## Mike's way
 
 Use $mikes-way by default for software development work. Its engineering-manager role applies to the primary agent; subagents execute their assigned roles directly.
+
+When the custom Codex agents are available, use `frontend_engineer` for interface design and implementation, `engineer` for backend and non-interface implementation, `researcher` for read-only investigation, and `reviewer` for independent QA.
+
+For interface tasks, the primary agent owns scope and product constraints. The `frontend_engineer` owns visual and interaction decisions and verifies the result in the real interface.
+
+Work in phases. Finish research before starting implementation. Stop implementation before starting review. Do not run `researcher` or `reviewer` threads at the same time as `engineer` or `frontend_engineer` threads.
+
+Within a phase, run multiple agents of the same role in parallel when the tasks are independent. Start backend work before dependent frontend work. Run backend and frontend work in parallel only after their shared contracts are settled and the remaining work is independent.
 <!-- MIKES_WAY_END -->
 
 <!-- CODEGRAPH_START -->
@@ -115,7 +127,7 @@ After applying the setup:
 
 1. Parse every changed TOML file.
 2. Confirm each owned setting has exactly one effective definition and the expected value.
-3. Confirm all three agent files exist with their intended model, reasoning effort, sandbox, and instructions.
+3. Confirm all four agent files exist with their intended model, reasoning effort, sandbox, and instructions.
 4. Read `AGENTS.md` back and confirm that each applied block appears exactly once and unrelated instructions are unchanged.
 5. Report the files changed, files created, backups written, and conflicts left unresolved, including a missing `mikes-way` skill or a global override that hides either block.
 6. Tell the user to restart Codex and start a new task for the setup to take effect.
