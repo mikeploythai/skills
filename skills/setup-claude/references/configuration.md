@@ -37,19 +37,17 @@ When `mikes-way` is installed, `skills: mikes-way` can be added to any of these 
 
 ## Model choice
 
-At standard API rates on September 23, 2026, Fable 5.1 costs $10 per million input tokens and $50 per million output tokens, Opus 5.5 costs $4 and $20, and Sonnet 5 costs $2 and $10. Fable is two and a half times Opus 5.5 and five times Sonnet 5. Thinking tokens bill as output, so effort and role decide most of the bill. See the official [pricing](https://platform.claude.com/docs/en/about-claude/pricing) and [model overview](https://platform.claude.com/docs/en/about-claude/models/overview).
+At standard API rates on September 23, 2026, Fable 5.1 costs $10 per million input tokens and $50 per million output tokens, Opus 5.5 costs $4 and $20, and Sonnet 5 costs $2 and $10. Fable is two and a half times Opus 5.5 and five times Sonnet 5. Cache reads cost $0.25 per million tokens on Fable and $0.20 on Opus 5.5, so the gap narrows for cache-heavy work. Thinking tokens bill as output, so effort and role decide most of the bill. Anthropic reports that Opus 5.5 performs at Fable 5.1's level on most work, so no default role uses Fable. See the official [pricing](https://platform.claude.com/docs/en/about-claude/pricing) and [model overview](https://platform.claude.com/docs/en/about-claude/models/overview).
 
 | Role | Model | Effort | Why |
 | --- | --- | --- | --- |
-| Orchestrator | `claude-opus-5-5` | `medium` | Delegates, reads reports, and decides. It runs the longest session, so its rate applies to every turn. Opus 5.5 at `medium` beats Opus 5 at `high` in Anthropic's coding and knowledge-work evaluations, which covers routine orchestration at two fifths of Fable's price. Switch to Fable with `/model` for a hard problem. |
-| Reviewer | `fable` | `high` | Catching a real defect is worth the most per token, and review output is findings rather than files. This is the one role where Fable's price pays for itself. |
+| Orchestrator | `claude-opus-5-5` | `medium` | Delegates, reads reports, and decides. It runs the longest session, so its rate applies to every turn. Opus 5.5 at `medium` beats Opus 5 at `high` in Anthropic's coding and knowledge-work evaluations, which covers routine orchestration at two fifths of Fable's price. For a hard problem, raise effort first, then switch to Fable with `/model`. |
+| Reviewer | `claude-opus-5-5` | `high` | Review runs more often than any other role, often as several parallel passes that each read the whole change, so its rate multiplies fastest. Opus 5.5 matches or beats Fable 5.1 on Anthropic's coding evaluations at two fifths of the price. `high` spends the extra thinking where a missed defect costs the most. For a high-risk change, run a one-off review on Fable. |
 | Frontend engineer | `claude-opus-5-5` | `high` | Opus 5.5 is strongest at interface work. It follows specific design constraints and reads screenshots precisely, which matters when it verifies its own UI. Opus 5.5 at `medium` already beats Opus 5 at `high` on coding, so `high` leaves room for browser verification without paying for `xhigh`. |
 | Backend engineer | `claude-opus-5-5` | `high` | Cost per completed task matters more than cost per token. A stronger engineer means fewer review and rework rounds, and each round costs a reviewer pass and an engineer pass. Matching the frontend engineer keeps both implementation roles at the same level. |
-| Researcher | `sonnet` | `high` | Reads a lot and writes a little. It finds and reports rather than decides, so input-heavy work is the wrong place to pay Opus or Fable rates. |
+| Researcher | `sonnet` | `high` | Reads a lot and writes a little. It finds and reports rather than decides, so input-heavy work is the wrong place to pay Opus rates. |
 
 Raise a single turn instead of the defaults: `/effort` changes effort mid-session, and `/model` switches the orchestrator for hard problems. That beats paying `max` on every routine turn.
-
-Fable 5.1 requires 30-day data retention. An organization on zero data retention cannot use it without express authorization from Anthropic, so an install there should put the reviewer on `claude-opus-5-5` at `high`. Confirm that the organization can use Opus 5.5 under its retention settings before installing.
 
 ## Researcher
 
@@ -86,7 +84,7 @@ Install as `<claude-home>/agents/reviewer.md`:
 ---
 name: reviewer
 description: Independently reviews changes and tests whether the assigned user path works.
-model: fable
+model: claude-opus-5-5
 effort: high
 disallowedTools: Edit, Write, NotebookEdit
 color: orange
