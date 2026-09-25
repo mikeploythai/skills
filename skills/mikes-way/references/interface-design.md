@@ -28,6 +28,7 @@ These can help with design taste. Follow the guidance on optional companions in 
 - [Cloudflare's Kumo design skill](https://github.com/cloudflare/kumo/tree/main/skills/kumo-design) has useful guidance even when the project doesn't use Kumo. Fit the visual choices to the project, and only use its component examples when those components are actually available. The skill doesn't require adopting the Kumo UI library.
 - [Jakub Krehel's skills](https://github.com/jakubkrehel/skills) cover different parts of interface design and review. Use the ones relevant to the work.
 - [Emil Kowalski's skills](https://github.com/emilkowalski/skills) cover interface polish, component design, and deliberate motion.
+- [shadcn's skill](https://ui.shadcn.com/docs/skills) gives agents project context from `components.json` and knowledge of the shadcn CLI, theming, and composition patterns. Only use it in projects that use shadcn/ui.
 
 ## Choosing skills by task
 
@@ -38,6 +39,7 @@ Choose the skill that matches the requested task and scope, then read it before 
 | General guidelines | `emil-design-eng` | Interface polish, component craft, and motion decisions that fit the product. |
 | Interaction guidelines | `apple-design` | Gestures, physical and interruptible motion, springs, depth, materials, and typography. Adapt the principles to the product's established style. |
 | Interface guidelines | `kumo-design` | Interface conventions, dashboard usability, and design tokens. Its guidelines apply without the Kumo UI library; use component examples only when those components are available. |
+| shadcn/ui components | `shadcn` | Add, search, compose, style, or debug shadcn/ui components and registries. Only in projects with a `components.json`. |
 | Visual prototyping | `variant` | Compare versions of a component in its real page context, varying one primary axis such as layout, density, emphasis, typography, or voice. |
 | Broader prototyping | `prototype` | Compare distinct layout, motion, or interaction directions in an isolated prototype surface with realistic surrounding context. |
 | Web motion implementation | `animate` | Build an animation or implement a requested motion fix. Writes code for timing, curves, properties, interruption, exits, and reduced motion. |
