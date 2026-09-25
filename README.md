@@ -38,6 +38,7 @@ These aren't required, but heavily encouraged to install:
 - [Cloudflare's Kumo design skill](https://github.com/cloudflare/kumo/tree/main/skills/kumo-design) for interface guidance. Using it doesn't mean adopting the Kumo library.
 - [Jakub Krehel's skills](https://github.com/jakubkrehel/skills) for focused interface design and review.
 - [Emil Kowalski's skills](https://github.com/emilkowalski/skills) for interface polish, component design, and animation decisions.
+- [shadcn's skill](https://ui.shadcn.com/docs/skills) for projects that use shadcn/ui.
 - [CodeGraph](https://github.com/colbymchenry/codegraph) for finding symbols and tracing call paths when a usable index is available. Otherwise the agent uses `rg` and reads the files.
 
 Missing companions shouldn't hold up tasks. The agent can recommend one when it would help once, but won't install it without approval.

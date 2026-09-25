@@ -9,19 +9,20 @@ For a new frontend, follow the Vite+ scaffolding preference in [stack preference
 This is Mike's starting `vite.config.ts` for a React and Tailwind v4 app. Keep it when the installed versions support it and the repo has not chosen different rules. Remove the framework-specific presets, plugins, and comments that do not apply. Ultracite 7.12 or newer ships the `shadcn` preset used below; on older versions, upgrade rather than writing the plugin entry and rules by hand.
 
 ```ts
+import tailwindcss from "@tailwindcss/vite";
 // TanStack Router projects only.
 import { tanstackRouter } from "@tanstack/router-plugin/vite";
-import tailwindcss from "@tailwindcss/vite";
 import reactVite from "@vitejs/plugin-react";
 import fmt from "ultracite/oxfmt";
 import antiSlop from "ultracite/oxlint/anti-slop";
 import core from "ultracite/oxlint/core";
 import jsPlugins, { jsPluginSettings } from "ultracite/oxlint/js-plugins";
-import reactLint from "ultracite/oxlint/react";
+import reactUltracite from "ultracite/oxlint/react";
 import shadcn from "ultracite/oxlint/shadcn";
 // TanStack projects only, including the matching presets and plugin below.
 import tanstack from "ultracite/oxlint/tanstack";
 import tanstackJsPlugins from "ultracite/oxlint/tanstack/js-plugins";
+// Vitest projects only.
 import vitest from "ultracite/oxlint/vitest";
 import { defineConfig, lazyPlugins } from "vite-plus";
 
@@ -34,10 +35,11 @@ export default defineConfig({
   lint: {
     extends: [
       core,
-      reactLint,
+      reactUltracite,
       jsPlugins,
       antiSlop,
       shadcn,
+      // Vitest projects only.
       vitest,
       // TanStack projects only.
       tanstack,
@@ -45,6 +47,7 @@ export default defineConfig({
     ],
     ignorePatterns: core.ignorePatterns,
     jsPlugins: [
+      ...(jsPlugins.jsPlugins ?? []),
       {
         name: "vite-plus",
         specifier: "vite-plus/oxlint-plugin",
@@ -71,7 +74,8 @@ export default defineConfig({
             {
               patterns: [
                 {
-                  message: "Use the @/* alias for imports outside the parent folder.",
+                  message:
+                    "Use the @/* alias for imports outside the parent folder.",
                   regex: "^\\.\\./\\.\\./",
                 },
               ],
@@ -157,7 +161,10 @@ export default defineConfig({
   },
   plugins: lazyPlugins(() => [
     // TanStack Router projects only.
-    tanstackRouter({ autoCodeSplitting: true, target: "react" }),
+    tanstackRouter({
+      autoCodeSplitting: true,
+      target: "react",
+    }),
     reactVite({ compiler: true }),
     tailwindcss(),
   ]),
@@ -205,7 +212,7 @@ Install the plugins referenced by the selected Ultracite presets as direct dev d
 vp add -D @shadcn/lint @stylistic/eslint-plugin eslint-plugin-github eslint-plugin-sonarjs oxlint-plugin-eslint oxlint-plugin-react-doctor
 ```
 
-The `js-plugins` preset needs `eslint-plugin-github`, `eslint-plugin-sonarjs`, and `oxlint-plugin-react-doctor`. The `shadcn` preset needs `@shadcn/lint`. The `stylistic` and `eslint-js` entries need `@stylistic/eslint-plugin` and `oxlint-plugin-eslint`. The `anti-slop` preset bundles its own plugin. Keep `jsPluginSettings` on the root `lint.settings`; Oxlint does not merge settings from extended configs. Oxlint loads the preset plugins through `extends`, but dependency analyzers such as Knip only read the root `jsPlugins`. If the project runs Knip, spread `jsPlugins.jsPlugins` and `shadcn.jsPlugins` into the root array so those packages aren't reported as unused. Install any plugins required by the TanStack presets only when the project uses TanStack. Check the installed preset's plugin specifiers and supported versions, then run the project's lint command to verify they load. See [Ultracite's releases](https://github.com/haydenbleasel/ultracite/releases).
+The `js-plugins` preset needs `eslint-plugin-github`, `eslint-plugin-sonarjs`, and `oxlint-plugin-react-doctor`. The `shadcn` preset needs `@shadcn/lint`. The `stylistic` and `eslint-js` entries need `@stylistic/eslint-plugin` and `oxlint-plugin-eslint`. The `anti-slop` preset bundles its own plugin. Keep `jsPluginSettings` on the root `lint.settings`; Oxlint does not merge settings from extended configs. Oxlint loads the preset plugins through `extends`, but dependency analyzers such as Knip only read the root `jsPlugins`, so the config spreads `jsPlugins.jsPlugins` into the root array. If Knip still reports `@shadcn/lint` as unused, spread `shadcn.jsPlugins` there too. Install any plugins required by the TanStack presets only when the project uses TanStack. Check the installed preset's plugin specifiers and supported versions, then run the project's lint command to verify they load. See [Ultracite's releases](https://github.com/haydenbleasel/ultracite/releases).
 
 ## Tailwind design-system linting
 
