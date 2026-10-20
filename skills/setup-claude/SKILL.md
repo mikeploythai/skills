@@ -22,10 +22,12 @@ If the hashes differ, ask the user whether they want to update. Only after they 
 - Reviewer: Opus 5.5 at `high`, no file edits.
 - Route interface work to `frontend-engineer`, backend and non-interface implementation to `engineer`, read-only investigation to `researcher`, and independent QA to `reviewer`.
 - Finish research before implementation and stop implementation before review. Run multiple agents within a role when their tasks are independent. Default to backend before dependent frontend work; run both in parallel only after their shared contracts are settled and the remaining work is independent.
+- Give each `frontend-engineer` one screen, component, or flow, with a fresh agent per slice.
+- Auto-compaction at 400K tokens instead of about 967K.
 - Prompted approvals, Bash sandboxing where the platform supports it, and visible thinking summaries.
 - Global `CLAUDE.md` instructions for Mike's way and CodeGraph.
 
-Claude Code has no session cap on concurrent subagents. Parallelism comes from batching agent calls in a single turn. Each agent file pins its own model and effort, so this setup doesn't use `CLAUDE_CODE_SUBAGENT_MODEL`, the environment variable that sets a default subagent model. `CLAUDE_CODE_SUBAGENT_MODEL_FORCE=1` would override the pins. Web search, web fetch, and context compaction are built in and need no configuration.
+Claude Code has no session cap on concurrent subagents. Parallelism comes from batching agent calls in a single turn. Each agent file pins its own model and effort, so this setup doesn't use `CLAUDE_CODE_SUBAGENT_MODEL`, the environment variable that sets a default subagent model. `CLAUDE_CODE_SUBAGENT_MODEL_FORCE=1` would override the pins. Web search, web fetch, and context compaction are built in. The setup only moves compaction earlier.
 
 Opus 5.5 runs orchestration, frontend and backend implementation, and review. Even at `medium`, it beats Sonnet 5.5 at `high`, so the backend engineer runs it at `medium` for about 50% more cost per task. Sonnet 5.5 runs research, where the work is input-heavy and its input and cache-read prices are half Opus's. Opus 5.5 beats Fable 5.1 on most published results, so Fable is a manual escalation rather than a default: raise effort first, since `/advisor` buys about what more effort does. The configuration reference explains the per-role reasoning.
 
@@ -73,6 +75,7 @@ Before changing an existing file, create a timestamped backup beside it.
 Merge only the settings owned by this setup:
 
 - `model`
+- `autoCompactWindow`
 - `showThinkingSummaries`
 - `permissions.defaultMode`
 - `sandbox.enabled`
@@ -103,6 +106,8 @@ For interface tasks, the primary agent owns scope and product constraints. The `
 Work in phases. Finish research before starting implementation. Stop implementation before starting review. Do not run `researcher` or `reviewer` agents at the same time as `engineer` or `frontend-engineer` agents.
 
 Within a phase, run multiple agents of the same role in parallel when the tasks are independent. Start backend work before dependent frontend work. Run backend and frontend work in parallel only after their shared contracts are settled and the remaining work is independent.
+
+Give each `frontend-engineer` one screen, component, or flow. Split larger interface work across several agents instead of handing it all to one. Run them in parallel when their files don't overlap, otherwise one after another. Start a fresh agent for each slice rather than resuming one across slices, and pass it the design decisions earlier slices made.
 <!-- MIKES_WAY_END -->
 
 <!-- CODEGRAPH_START -->

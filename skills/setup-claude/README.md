@@ -30,6 +30,7 @@ The skill preserves unrelated configuration and only changes global Claude Code 
 
 | Setting | Value |
 | --- | --- |
+| `autoCompactWindow` | `400000` |
 | `model` | `claude-opus-5-5` |
 | `showThinkingSummaries` | `true` |
 | `permissions.defaultMode` | `default` |
@@ -40,4 +41,4 @@ Plus four subagents in `<claude-home>/agents/`: a read-only `researcher` on Sonn
 
 Opus 5.5 takes the orchestrator, frontend engineer, backend engineer, and reviewer seats. Even at `medium`, it beats Sonnet 5.5 at `high` on independent benchmarks, and the backend engineer costs about 50% more per task than Sonnet 5.5, not double. Sonnet 5.5 takes the researcher seat, where the work is input-heavy and its input and cache-read prices are half Opus's. Fable 5.1 is a manual escalation: raise effort first, since `/advisor` buys about what more effort does, or use `/model fable` for a full switch.
 
-Some Codex settings have no counterpart here. Claude Code has no session cap on concurrent subagents. Each agent file pins its own model, so the setup doesn't use `CLAUDE_CODE_SUBAGENT_MODEL`, and `CLAUDE_CODE_SUBAGENT_MODEL_FORCE=1` would override the pins. Web search, web fetch, and context compaction are built in.
+Some Codex settings have no counterpart here. Claude Code has no session cap on concurrent subagents. Each agent file pins its own model, so the setup doesn't use `CLAUDE_CODE_SUBAGENT_MODEL`, and `CLAUDE_CODE_SUBAGENT_MODEL_FORCE=1` would override the pins. Web search, web fetch, and context compaction are built in; the setup only moves compaction to 400K tokens.

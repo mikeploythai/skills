@@ -10,6 +10,7 @@ Merge into `<claude-home>/settings.json`:
 
 ```json
 {
+  "autoCompactWindow": 400000,
   "model": "claude-opus-5-5",
   "showThinkingSummaries": true,
   "permissions": {
@@ -23,6 +24,8 @@ Merge into `<claude-home>/settings.json`:
 ```
 
 No `effortLevel` is set. The orchestrator starts at `medium`, Opus 5.5's own default, and a user-level `effortLevel` does not apply to it. Use `/effort` to change it. See the [model configuration docs](https://code.claude.com/docs/en/model-config).
+
+`autoCompactWindow` compacts sessions at 400K tokens instead of Opus 5.5's default of about 967K. Every request re-reads the whole conversation, so cost per request grows with context. In a month of this setup's transcripts, main-session requests above 200K tokens were 78% of main-session spend, and several sessions ran to the default limit before compacting. Subagents inherit the window unless their frontmatter sets a lower `autoCompactWindow`. A per-model value saved with `/autocompact` takes precedence over this key, and `CLAUDE_CODE_AUTO_COMPACT_WINDOW` overrides both. Compaction is itself a large request and drops detail, so `/clear` between unrelated tasks is still cheaper. See [set the auto-compact window](https://code.claude.com/docs/en/model-config#set-the-auto-compact-window).
 
 Bash sandboxing uses operating system isolation, which is not available everywhere. Leave `sandbox.failIfUnavailable` unset so sessions on an unsupported platform fall back to ordinary permission prompts instead of refusing to start.
 
