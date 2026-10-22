@@ -21,7 +21,7 @@ If the hashes differ, ask the user whether they want to update. Only after they 
 - Backend engineer: Opus 5.5 at `medium`, edits accepted inside the workspace.
 - Reviewer: Opus 5.5 at `high`, no file edits.
 - Route interface work to `frontend-engineer`, backend and non-interface implementation to `engineer`, read-only investigation to `researcher`, and independent QA to `reviewer`.
-- Finish research before implementation and stop implementation before review. Run multiple agents within a role when their tasks are independent. Default to backend before dependent frontend work; run both in parallel only after their shared contracts are settled and the remaining work is independent.
+- Finish research before implementation and stop implementation before review. Research may overlap implementation only when its findings can't change the work in progress. Run multiple agents within a role when their tasks are independent. Default to backend before dependent frontend work; run both in parallel only after their shared contracts are settled and the remaining work is independent.
 - Give each `frontend-engineer` one screen, component, or flow, with a fresh agent per slice.
 - Auto-compaction at 400K tokens instead of about 967K.
 - Prompted approvals, Bash sandboxing where the platform supports it, and visible thinking summaries.
@@ -103,7 +103,7 @@ When the custom Claude Code subagents are available, use `frontend-engineer` for
 
 For interface tasks, the primary agent owns scope and product constraints. The `frontend-engineer` owns visual and interaction decisions and verifies the result in the real interface.
 
-Work in phases. Finish research before starting implementation. Stop implementation before starting review. Do not run `researcher` or `reviewer` agents at the same time as `engineer` or `frontend-engineer` agents.
+Work in phases. Finish research before starting implementation. Stop implementation before starting review. Do not run `reviewer` agents at the same time as `engineer` or `frontend-engineer` agents. A `researcher` may run during implementation only when its findings can't change the work in progress, such as investigating a later slice or an unrelated question. If the answer could change what an engineer is building, finish that research before the engineer starts.
 
 Within a phase, run multiple agents of the same role in parallel when the tasks are independent. Start backend work before dependent frontend work. Run backend and frontend work in parallel only after their shared contracts are settled and the remaining work is independent.
 
