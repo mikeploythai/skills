@@ -22,7 +22,7 @@ If the hashes differ, ask the user whether they want to update. Only after they 
 - Reviewer: `gpt-6.1-sol` at `high`, read-only.
 - Up to four concurrent subagent threads.
 - Route interface work to `frontend_engineer`, backend and non-interface implementation to `engineer`, read-only investigation to `researcher`, and independent QA to `reviewer`.
-- Finish research before implementation and stop implementation before review. Run multiple agents within a role when their tasks are independent. Default to backend before dependent frontend work; run both in parallel only after their shared contracts are settled and the remaining work is independent.
+- Finish research before implementation and stop implementation before review. Research may overlap implementation only when its findings can't change the work in progress. Run multiple agents within a role when their tasks are independent. Default to backend before dependent frontend work; run both in parallel only after their shared contracts are settled and the remaining work is independent.
 - On-request approvals, workspace-write sandboxing, live web search, concise reasoning summaries, low verbosity, pragmatic personality, and experimental context management.
 - Global `AGENTS.md` instructions for Mike's way and CodeGraph.
 
@@ -101,7 +101,7 @@ When the custom Codex agents are available, use `frontend_engineer` for interfac
 
 For interface tasks, the primary agent owns scope and product constraints. The `frontend_engineer` owns visual and interaction decisions and verifies the result in the real interface.
 
-Work in phases. Finish research before starting implementation. Stop implementation before starting review. Do not run `researcher` or `reviewer` threads at the same time as `engineer` or `frontend_engineer` threads.
+Work in phases. Finish research before starting implementation. Stop implementation before starting review. Do not run `reviewer` threads at the same time as `engineer` or `frontend_engineer` threads. A `researcher` may run during implementation only when its findings can't change the work in progress, such as investigating a later slice or an unrelated question. If the answer could change what an engineer is building, finish that research before the engineer starts.
 
 Within a phase, run multiple agents of the same role in parallel when the tasks are independent. Start backend work before dependent frontend work. Run backend and frontend work in parallel only after their shared contracts are settled and the remaining work is independent.
 <!-- MIKES_WAY_END -->
