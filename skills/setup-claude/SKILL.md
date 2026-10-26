@@ -23,7 +23,7 @@ If the hashes differ, ask the user whether they want to update. Only after they 
 - Route interface work to `frontend-engineer`, backend and non-interface implementation to `engineer`, read-only investigation to `researcher`, and independent QA to `reviewer`.
 - Finish research before implementation and stop implementation before review. Research may overlap implementation only when its findings can't change the work in progress. Run multiple agents within a role when their tasks are independent. Default to backend before dependent frontend work; run both in parallel only after their shared contracts are settled and the remaining work is independent.
 - Give each `frontend-engineer` one screen, component, or flow, with a fresh agent per slice.
-- Auto-compaction at 400K tokens instead of about 967K.
+- Auto-compaction at 600K tokens instead of about 967K.
 - Prompted approvals, Bash sandboxing where the platform supports it, and visible thinking summaries.
 - Global `CLAUDE.md` instructions for Mike's way and CodeGraph.
 
